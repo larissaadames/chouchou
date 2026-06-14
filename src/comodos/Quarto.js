@@ -77,12 +77,9 @@ class Quarto {
   }
 
   mousePressed() {
-    // Clicou no Chouchou? → fica feliz
-    const d = dist(mouseX, mouseY, this.chouchou.x, this.chouchou.y)
-    if (d < 70) {
-      this.chouchou.setEstado('feliz')
-      // Volta para idle após 2 segundos
-      setTimeout(() => this.chouchou.setEstado('idle'), 2000)
+    // Clicou no Chouchou? → delega para o método tocar()
+    if (this.chouchou.foiTocado(mouseX, mouseY)) {
+      this.chouchou.tocar()
     }
   }
 }

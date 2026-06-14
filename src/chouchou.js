@@ -14,6 +14,17 @@ class Chouchou {
     // o tint() aplica essa cor por cima.
     this.cor = { r: 50, g: 170, b: 50} // bege-dourado padrão
 
+    // ── Stats (fome, humor, saúde) ───────────────────────────────────────────
+    // Cada stat vai de 0 (péssimo) a 100 (perfeito).
+    // O decaimento por tempo vem na próxima etapa — por enquanto os valores
+    // são fixos para que a HUD já apareça corretamente.
+    this.stats = {
+      fome:  { valor: 80, max: 100, cor: '#f97316', icone: '🍖' }, // laranja
+      humor: { valor: 60, max: 100, cor: '#a855f7', icone: '⭐' }, // roxo
+      hidratacao: { valor: 50, max: 100, cor: '#3b82f6', icone: '💧' }, // azul
+      energia: { valor: 90, max: 100, cor: '#facc15', icone: '⚡' }, // amarelo
+    }
+
     // ── Estado atual ─────────────────────────────────────────────────────────
     // Controla qual animação e expressão estão ativos.
     // Valores válidos: 'idle' | 'feliz' | 'comendo' | 'triste' | 'dormindo'
@@ -48,13 +59,19 @@ class Chouchou {
 
       // roupa: uma imagem opcional desenhada por cima de tudo
       roupa: null,
+
+      // chapeu: uma imagem opcional desenhada por cima de tudo (acima da roupa)
+      // Segue o mesmo padrão de roupa: null = sem chapéu
+      chapeu: null,
     }
   }
 
   // ── Inicializa posição após o canvas ser criado ───────────────────────────
   inicializar() {
     this.x = width  / 2
-    this.y = height / 2
+    // Sobe um pouco do centro para não ficar escondido atrás da HUD de stats
+    // (faixa de stats = 72px no rodapé, então deslocamos 36px para cima)
+    this.y = height / 2 - 36
   }
 
   // ── Troca de estado ───────────────────────────────────────────────────────
@@ -76,6 +93,37 @@ class Chouchou {
     this.sprites.roupa = imgRoupa
   }
 
+  // ── Troca de chapéu ───────────────────────────────────────────────────────
+  // Passa null para remover o chapéu.
+  setChapeu(imgChapeu) {
+    this.sprites.chapeu = imgChapeu
+  }
+
+  // ── Interações ────────────────────────────────────────────────────────────
+
+  // Verifica se um ponto (px, py) está sobre o corpo do Chouchou.
+  // Raio de 90 = metade dos 180px de tamanho de exibição do sprite.
+  foiTocado(px, py) {
+    return dist(px, py, this.x, this.y) < 90
+  }
+
+  // Toque carinhoso — aumenta humor, reage visualmente.
+  // Qualquer cômodo pode chamar isso no mousePressed().
+  tocar() {
+    this._alterarStat('humor', +12)
+    this.setEstado('feliz')
+    setTimeout(() => this.setEstado('idle'), 1500)
+  }
+
+  // ── Utilitário interno: altera um stat com segurança ─────────────────────
+  // Garante que o valor nunca sai do intervalo [0, max].
+  // Outros métodos de interação (alimentar, regar, etc.) vão usar isso também.
+  _alterarStat(chave, quantidade) {
+    const stat = this.stats[chave]
+    if (!stat) return
+    stat.valor = constrain(stat.valor + quantidade, 0, stat.max)
+  }
+
   // ── Update (lógica de animação) ───────────────────────────────────────────
   // Chamado a cada frame pelo cômodo ativo.
   update() {
@@ -90,16 +138,20 @@ class Chouchou {
   }
 
   // ── Draw (renderização em camadas) ────────────────────────────────────────
-  // Ordem: corpo → expressão → roupa
+  // Ordem: corpo → expressão → roupa → chapéu
   draw() {
     push()
     imageMode(CENTER)
+
+    // Tamanho fixo de renderização — todos os sprites são desenhados
+    // nesse tamanho independente da resolução do PNG.
+    const S = 180
 
     // ── Camada 1: corpo com cor do usuário ──────────────────────────────────
     const frames = this.sprites.corpo[this.estado] ?? []
     if (frames.length > 0) {
       tint(this.cor.r, this.cor.g, this.cor.b)
-      image(frames[this.frameAtual], this.x, this.y)
+      image(frames[this.frameAtual], this.x, this.y, S, S)
       noTint()
     } else {
       // Placeholder geométrico enquanto os PNGs não existem
@@ -109,12 +161,17 @@ class Chouchou {
     // ── Camada 2: expressão (sem tint — cores originais do PNG) ────────────
     const expressao = this.sprites.expressao[this.estado]
     if (expressao) {
-      image(expressao, this.x, this.y)
+      image(expressao, this.x, this.y, S, S)
     }
 
     // ── Camada 3: roupa por cima de tudo ───────────────────────────────────
     if (this.sprites.roupa) {
-      image(this.sprites.roupa, this.x, this.y)
+      image(this.sprites.roupa, this.x, this.y, S, S)
+    }
+
+    // ── Camada 4: chapéu (acima da roupa) ──────────────────────────────────
+    if (this.sprites.chapeu) {
+      image(this.sprites.chapeu, this.x, this.y, S, S)
     }
 
     pop()

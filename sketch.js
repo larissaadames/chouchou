@@ -30,3 +30,7 @@ function draw() {
 function mousePressed() {
   sceneManager.mousePressed()
 }
+
+function mouseReleased() {
+  sceneManager.mouseReleased()
+}

@@ -26,9 +26,10 @@ class SceneManager {
     if (this.cenaAtiva?.aoEntrar) this.cenaAtiva.aoEntrar()
   }
 
-  update()       { this.cenaAtiva?.update()       }
-  draw()         { this.cenaAtiva?.draw()          }
-  mousePressed() { this.cenaAtiva?.mousePressed()  }
+  update()        { this.cenaAtiva?.update()        }
+  draw()          { this.cenaAtiva?.draw()           }
+  mousePressed()  { this.cenaAtiva?.mousePressed()   }
+  mouseReleased() { this.cenaAtiva?.mouseReleased()  }
 }
 
 // ─── HomeScene ────────────────────────────────────────────────────────────────
@@ -142,6 +143,7 @@ class ComodoScene {
       new Quarto(chouchou),
       new Cozinha(chouchou),
       new Banheiro(chouchou),
+      new Jardim(chouchou),
     ]
 
     // Áreas de toque dos botões do HUD (calculadas no aoEntrar)
@@ -181,7 +183,68 @@ class ComodoScene {
 
   draw() {
     this.comodoAtivo.draw()  // fundo + cenário + Chouchou
-    this._hud()              // HUD sempre por cima
+    this._hudStats()         // barra de stats embaixo
+    this._hud()              // HUD de navegação sempre por cima
+  }
+
+  // ── HUD de Stats (parte de baixo) ─────────────────────────────────────────
+  // Exibe fome, humor e saúde numa faixa fixa acima da barra de navegação.
+  // A altura da faixa é HUD_STATS_H = 72px, posicionada no rodapé do canvas.
+  _hudStats() {
+    const faixaH = 72
+    const faixaY = height - faixaH
+
+    // Fundo semi-transparente
+    noStroke()
+    fill(0, 0, 0, 160)
+    rect(0, faixaY, width, faixaH)
+
+    // Linha divisória sutil no topo da faixa
+    stroke(255, 255, 255, 30)
+    strokeWeight(1)
+    line(0, faixaY, width, faixaY)
+    noStroke()
+
+    // ── Desenha cada stat ────────────────────────────────────────────────────
+    // As 3 stats são distribuídas em colunas iguais dentro da faixa.
+    const stats    = this.chouchou.stats
+    const chaves   = Object.keys(stats)   // ['fome', 'humor', 'saude']
+    const colunaW  = width / chaves.length
+    const barraW   = colunaW * 0.72       // barra ocupa 72% da coluna
+    const barraH   = 10
+    const barraY   = faixaY + 44          // posição vertical da barra
+
+    chaves.forEach((chave, i) => {
+      const stat  = stats[chave]
+      const cx    = colunaW * i + colunaW / 2  // centro X da coluna
+      const pct   = stat.valor / stat.max       // 0.0 → 1.0
+
+      // ── Ícone + nome ──────────────────────────────────────────────────────
+      textAlign(CENTER, CENTER)
+      noStroke()
+
+      textSize(16)
+      text(stat.icone, cx, faixaY + 14)
+
+      fill(255, 255, 255, 200)
+      textSize(11)
+      text(chave.toUpperCase(), cx, faixaY + 30)
+
+      // ── Barra de fundo (trilha) ───────────────────────────────────────────
+      fill(255, 255, 255, 25)
+      rect(cx - barraW / 2, barraY, barraW, barraH, 6)
+
+      // ── Barra de preenchimento ────────────────────────────────────────────
+      // A cor muda conforme o valor: crítico (< 25%) fica vermelho.
+      const corBarra = pct < 0.25 ? '#ef4444' : stat.cor
+      fill(corBarra)
+      rect(cx - barraW / 2, barraY, barraW * pct, barraH, 6)
+
+      // ── Valor numérico ────────────────────────────────────────────────────
+      fill(255, 255, 255, 180)
+      textSize(10)
+      text(`${floor(stat.valor)}`, cx + barraW / 2 + 10, barraY + barraH / 2)
+    })
   }
 
   // ── HUD ───────────────────────────────────────────────────────────────────
@@ -236,7 +299,7 @@ class ComodoScene {
   // ── Detecção de clique ────────────────────────────────────────────────────
   _dentroDA(area) {
     return mouseX > area.x && mouseX < area.x + area.w &&
-           mouseY > area.y && mouseY < area.y + area.h
+            mouseY > area.y && mouseY < area.y + area.h
   }
 
   mousePressed() {
@@ -255,5 +318,10 @@ class ComodoScene {
 
     // Repassa o clique para o cômodo (interações futuras)
     this.comodoAtivo.mousePressed()
+  }
+
+  mouseReleased() {
+    // Repassa para o cômodo ativo (ex: soltar o regador no Jardim)
+    this.comodoAtivo.mouseReleased?.()
   }
 }

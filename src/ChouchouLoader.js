@@ -14,23 +14,26 @@ function carregarSpritesChouchou(chouchou) {
   // Cada estado tem um array de frames para animação.
   // Um único frame = personagem estático naquele estado.
   chouchou.sprites.corpo = {
-    idle:     [loadImage('assets/sprites/corpo/idle_01.png')], // ex: idle_01.png, idle_02.png (respiração suave)
-    feliz:    [], // ex: feliz_01.png, feliz_02.png (pulando/vibrando)
-    comendo:  [], // ex: comendo_01.png, comendo_02.png
-    triste:   [], // ex: triste_01.png
-    dormindo: [], // ex: dormindo_01.png, dormindo_02.png (olhos fechados)
+    idle:     [loadImage('assets/sprites/corpo/idle01.png')], // ex: idle_01.png, idle_02.png (respiração suave)
+    feliz:    [loadImage('assets/sprites/corpo/idle01.png')], // ex: feliz_01.png, feliz_02.png (pulando/vibrando)
+    comendo:  [loadImage('assets/sprites/corpo/idle01.png')], // ex: comendo_01.png, comendo_02.png
+    triste:   [loadImage('assets/sprites/corpo/idle01.png')], // ex: triste_01.png
+    dormindo: [loadImage('assets/sprites/corpo/idle01.png')], // ex: dormindo_01.png, dormindo_02.png (olhos fechados)
   }
 
   // ── Expressões (olhos, boca — sem tint, cores originais) ──────────────────
   // Um PNG por estado, desenhado por cima do corpo.
   chouchou.sprites.expressao = {
-    idle:     loadImage('assets/sprites/expressoes/idle.png'), // ex: loadImage('assets/sprites/expressoes/idle.png')
-    feliz:    null,
+    idle:     loadImage('assets/sprites/expressoes/ccBravo.png'), // ex: loadImage('assets/sprites/expressoes/idle.png')
+    feliz:    loadImage('assets/sprites/expressoes/ccFeliz.png'),
     comendo:  null,
-    triste:   null,
+    triste:   loadImage('assets/sprites/expressoes/ccMal.png'),
     dormindo: null,
   }
 
   // ── Roupa (opcional — desenhada por cima de tudo) ─────────────────────────
-  chouchou.sprites.roupa = null // ex: loadImage('assets/sprites/roupas/pijama.png')
+  chouchou.sprites.roupa = null,// ex: loadImage('assets/sprites/roupas/pijama.png')
+
+  chouchou.sprites.chapeu = null // ex: loadImage('assets/sprites/acessorios/chapeu.png')
+
 }
