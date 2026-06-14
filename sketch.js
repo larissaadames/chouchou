@@ -1,20 +1,32 @@
-// Dimensões do canvas — parecido com tela de celular
+// ─── Configurações globais ────────────────────────────────────────────────────
 const LARGURA = 390
-const ALTURA = 844
+const ALTURA  = 844
 
+// Instâncias globais acessíveis por todos os módulos
 let sceneManager
+let chouchou
 
+// ─── preload ──────────────────────────────────────────────────────────────────
+// Chamado pelo p5 antes de tudo — ideal para carregar imagens e sons
+function preload() {
+  chouchou = new Chouchou()
+  carregarSpritesChouchou(chouchou) // preenche os sprites quando os PNGs existirem
+}
+
+// ─── setup ────────────────────────────────────────────────────────────────────
 function setup() {
-    createCanvas(LARGURA, ALTURA)
-    sceneManager = new SceneManager()
+  createCanvas(LARGURA, ALTURA)
+  sceneManager = new SceneManager(chouchou)
 }
 
+// ─── draw ─────────────────────────────────────────────────────────────────────
+// Loop principal — roda ~60x por segundo
 function draw() {
-    sceneManager.update()
-    sceneManager.draw()
+  sceneManager.update()
+  sceneManager.draw()
 }
 
-// Repassa eventos de clique para a cena ativa
+// ─── Eventos ──────────────────────────────────────────────────────────────────
 function mousePressed() {
-    sceneManager.mousePressed()
-}   
+  sceneManager.mousePressed()
+}

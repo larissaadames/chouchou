@@ -1,33 +1,88 @@
+// ─── Quarto ───────────────────────────────────────────────────────────────────
+// Primeiro cômodo — onde o Chouchou passa a maior parte do tempo.
+// ──────────────────────────────────────────────────────────────────────────────
+
 class Quarto {
-    constructor() {
-        this.nome = 'Quarto'
+  constructor(chouchou) {
+    this.nome      = 'Quarto'
+    this.chouchou  = chouchou
+  }
+
+  update() {}
+
+  draw() {
+    // ── Fundo ───────────────────────────────────────────────────────────────
+    background('#1a1a2e')
+
+    // Parede com gradiente simulado
+    noStroke()
+    fill('#16213e')
+    rect(0, 0, width, height * 0.72)
+
+    // ── Chão ────────────────────────────────────────────────────────────────
+    fill('#2d2250')
+    rect(0, height * 0.72, width, height * 0.28)
+
+    // Rodapé
+    fill('#3d3060')
+    rect(0, height * 0.72, width, 6)
+
+    // ── Cama (canto esquerdo) ────────────────────────────────────────────────
+    // Estrutura
+    fill('#3a2a60')
+    rect(20, height * 0.52, 150, 100, 8)
+    // Cabeceira
+    fill('#4a3a78')
+    rect(20, height * 0.52, 150, 32, 8)
+    // Travesseiro
+    fill('#e8d5f0')
+    rect(30, height * 0.535, 60, 22, 6)
+    // Cobertor
+    fill('#7c3aed')
+    rect(20, height * 0.565, 150, 55, 0, 0, 8, 8)
+    // Detalhe do cobertor
+    fill('#6d28d9')
+    rect(20, height * 0.565, 150, 12, 0)
+
+    // ── Janela (canto direito) ────────────────────────────────────────────────
+    fill('#0a0a1e')
+    rect(width - 110, height * 0.12, 90, 110, 6)
+    // Céu noturno
+    fill('#0f0f3a')
+    rect(width - 106, height * 0.125, 82, 102, 4)
+    // Lua
+    fill('#f0e68c')
+    ellipse(width - 78, height * 0.175, 28, 28)
+    fill('#0f0f3a')
+    ellipse(width - 70, height * 0.17, 24, 24)
+    // Estrelinha
+    fill('#f0e68c')
+    ellipse(width - 50, height * 0.19, 4, 4)
+    ellipse(width - 105, height * 0.21, 3, 3)
+    // Grade da janela
+    stroke('#2a1a50')
+    strokeWeight(2)
+    line(width - 65, height * 0.125, width - 65, height * 0.225)
+    line(width - 106, height * 0.175, width - 24, height * 0.175)
+    noStroke()
+
+    // ── Tapete ────────────────────────────────────────────────────────────────
+    fill('#4a1d8a')
+    ellipse(width / 2, height * 0.78, 220, 70)
+    fill('#5b2d9e')
+    ellipse(width / 2, height * 0.78, 180, 52)
+
+    // ── Chouchou ──────────────────────────────────────────────────────────────
+    this.chouchou.draw()
+  }
+
+  mousePressed() {
+    // Clicou no Chouchou? → fica feliz
+    const d = dist(mouseX, mouseY, this.chouchou.x, this.chouchou.y)
+    if (d < 70) {
+      this.chouchou.setEstado('feliz')
+      // Volta para idle após 2 segundos
+      setTimeout(() => this.chouchou.setEstado('idle'), 2000)
     }
-
-    update() {}
-
-    draw() {
-        background('#1a1a2e')
-
-        // chão
-        fill('#2d2d44')
-        noStroke()
-        rect(0, height * 0.75, width, height * 0.25)
-
-        // placeholder da cama
-        fill('#3a3a5c')
-        rect(40, height * 0.55, 160, 90, 8)
-        fill('#5a5a8a')
-        rect(40, height * 0.55, 160, 30, 8)
-
-        // placeholder do POU (centro)
-        fill('#e94560')
-        ellipse(width / 2, height * 0.55, 110, 110)
-        fill(255)
-        noStroke()
-        textAlign(CENTER, CENTER)
-        textSize(13)
-        text('[ POU ]', width / 2, height * 0.55)
-    }
-
-    mousePressed() {}
+  }
 }

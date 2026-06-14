@@ -1,90 +1,215 @@
-class Pou {
-    constructor() {
-        // cor do corpo (usuário pode mudar depois)
-        this.cor = { r: 180, g: 130, b: 80 } // marrom padrão igual ao POU original
+// ─── Chouchou ─────────────────────────────────────────────────────────────────
+// Classe principal do personagem.
+// Gerencia estado, animação, cor e renderização em camadas.
+// ──────────────────────────────────────────────────────────────────────────────
 
-        // estado atual
-        this.estado = 'idle' // idle | feliz | comendo | triste | dormindo
+class Chouchou {
+  constructor() {
+    // ── Posição (centralizado na tela) ──────────────────────────────────────
+    this.x = 0 // definido no setup depois que o canvas existe
+    this.y = 0
 
-        // animação
-        this.frameAtual   = 0
-        this.frameTimer   = 0
-        this.frameDuracao = 12 // quantos frames do p5 cada sprite fica visível
+    // ── Cor do corpo (usuário pode personalizar) ─────────────────────────────
+    // Corpo é desenhado em branco/cinza claro no PNG;
+    // o tint() aplica essa cor por cima.
+    this.cor = { r: 50, g: 170, b: 50} // bege-dourado padrão
 
-        // posição (centralizado)
-        this.x = width  / 2
-        this.y = height / 2
+    // ── Estado atual ─────────────────────────────────────────────────────────
+    // Controla qual animação e expressão estão ativos.
+    // Valores válidos: 'idle' | 'feliz' | 'comendo' | 'triste' | 'dormindo'
+    this.estado = 'idle'
 
-        // sprites carregados no preload (por estado)
-        // this.sprites é preenchido pelo PouLoader — veja abaixo
-        this.sprites = {
-        corpo:    {},   // { idle: [img, img], dormindo: [img] ... }
-        expressao: {},  // { feliz: img, triste: img ... }
-        roupa:     null
-        }
+    // ── Animação de frames ───────────────────────────────────────────────────
+    this.frameAtual   = 0  // índice do frame atual dentro do array do estado
+    this.frameTimer   = 0  // contador interno
+    this.frameDuracao = 12 // quantos ticks do p5 cada frame fica visível (menor = mais rápido)
+
+    // ── Sprites (preenchidos pelo ChouchouLoader) ────────────────────────────
+    this.sprites = {
+      // corpo: um array de imagens por estado (frames da animação)
+      // ex: { idle: [img1, img2], feliz: [img1], ... }
+      corpo: {
+        idle:     [],
+        feliz:    [],
+        comendo:  [],
+        triste:   [],
+        dormindo: [],
+      },
+
+      // expressao: uma única imagem por estado (olhos, boca, etc.)
+      // desenhada por cima do corpo, SEM tint (mantém cores originais)
+      expressao: {
+        idle:     null,
+        feliz:    null,
+        comendo:  null,
+        triste:   null,
+        dormindo: null,
+      },
+
+      // roupa: uma imagem opcional desenhada por cima de tudo
+      roupa: null,
+    }
+  }
+
+  // ── Inicializa posição após o canvas ser criado ───────────────────────────
+  inicializar() {
+    this.x = width  / 2
+    this.y = height / 2
+  }
+
+  // ── Troca de estado ───────────────────────────────────────────────────────
+  // Reinicia a animação quando o estado muda.
+  setEstado(novoEstado) {
+    if (this.estado === novoEstado) return
+    this.estado     = novoEstado
+    this.frameAtual = 0
+    this.frameTimer = 0
+  }
+
+  // ── Troca de cor do corpo ─────────────────────────────────────────────────
+  setCor(r, g, b) {
+    this.cor = { r, g, b }
+  }
+
+  // ── Troca de roupa ────────────────────────────────────────────────────────
+  setRoupa(imgRoupa) {
+    this.sprites.roupa = imgRoupa
+  }
+
+  // ── Update (lógica de animação) ───────────────────────────────────────────
+  // Chamado a cada frame pelo cômodo ativo.
+  update() {
+    const frames = this.sprites.corpo[this.estado] ?? []
+    if (frames.length === 0) return // sem sprites ainda, nada a animar
+
+    this.frameTimer++
+    if (this.frameTimer >= this.frameDuracao) {
+      this.frameTimer = 0
+      this.frameAtual = (this.frameAtual + 1) % frames.length
+    }
+  }
+
+  // ── Draw (renderização em camadas) ────────────────────────────────────────
+  // Ordem: corpo → expressão → roupa
+  draw() {
+    push()
+    imageMode(CENTER)
+
+    // ── Camada 1: corpo com cor do usuário ──────────────────────────────────
+    const frames = this.sprites.corpo[this.estado] ?? []
+    if (frames.length > 0) {
+      tint(this.cor.r, this.cor.g, this.cor.b)
+      image(frames[this.frameAtual], this.x, this.y)
+      noTint()
+    } else {
+      // Placeholder geométrico enquanto os PNGs não existem
+      this._placeholder()
     }
 
-    setEstado(novoEstado) {
-        if (this.estado === novoEstado) return
-        this.estado    = novoEstado
-        this.frameAtual = 0   // reinicia animação ao trocar estado
-        this.frameTimer = 0
+    // ── Camada 2: expressão (sem tint — cores originais do PNG) ────────────
+    const expressao = this.sprites.expressao[this.estado]
+    if (expressao) {
+      image(expressao, this.x, this.y)
     }
 
-    setCor(r, g, b) {
-        this.cor = { r, g, b }
+    // ── Camada 3: roupa por cima de tudo ───────────────────────────────────
+    if (this.sprites.roupa) {
+      image(this.sprites.roupa, this.x, this.y)
     }
 
-    update() {
-        // avança o frame da animação
-        this.frameTimer++
-        if (this.frameTimer >= this.frameDuracao) {
-        this.frameTimer = 0
-        const frames = this.sprites.corpo[this.estado] ?? []
-        if (frames.length > 0) {
-            this.frameAtual = (this.frameAtual + 1) % frames.length
-        }
-        }
-    }
+    pop()
+  }
 
-    draw() {
-        const frames    = this.sprites.corpo[this.estado] ?? []
-        const expressao = this.sprites.expressao[this.estado] ?? null
-        const roupa     = this.sprites.roupa
+  // ── Placeholder ───────────────────────────────────────────────────────────
+  // Desenhado enquanto os sprites reais não foram criados ainda.
+  // Representa o Chouchou com formas simples do p5.js.
+  _placeholder() {
+    const { r, g, b } = this.cor
+    const x = this.x
+    const y = this.y
 
-        push() // isola transformações
-        imageMode(CENTER)
+    noStroke()
 
-        // 1. corpo base com a cor do usuário
-        if (frames.length > 0) {
-        tint(this.cor.r, this.cor.g, this.cor.b)
-        image(frames[this.frameAtual], this.x, this.y)
-        noTint()
-        } else {
-        // placeholder enquanto não tem sprite
-        this._placeholder()
-        }
+    // Corpo principal
+    fill(r, g, b)
+    ellipse(x, y, 130, 130)
 
-        // 2. expressão por cima (sem tint — mantém as cores originais)
-        if (expressao) image(expressao, this.x, this.y)
+    // Orelhinhas
+    ellipse(x - 42, y - 52, 30, 30)
+    ellipse(x + 42, y - 52, 30, 30)
 
-        // 3. roupa por cima de tudo
-        if (roupa) image(roupa, this.x, this.y)
+    // Olhos (brancos)
+    fill(255)
+    ellipse(x - 22, y - 8, 28, 32)
+    ellipse(x + 22, y - 8, 28, 32)
 
-        pop()
-    }
+    // Pupilas
+    fill(30)
+    ellipse(x - 18, y - 6, 14, 18)
+    ellipse(x + 26, y - 6, 14, 18)
 
-    // desenhado enquanto os sprites não existem ainda
-    _placeholder() {
-        tint(this.cor.r, this.cor.g, this.cor.b)
+    // Reflexo dos olhos
+    fill(255)
+    ellipse(x - 14, y - 10, 5, 5)
+    ellipse(x + 30, y - 10, 5, 5)
+
+    // Boca (estado define a expressão)
+    this._bocaPlaceholder(x, y)
+  }
+
+  _bocaPlaceholder(x, y) {
+    noFill()
+    strokeWeight(3)
+
+    switch (this.estado) {
+      case 'feliz':
+        // sorriso largo
+        stroke(80, 40, 20)
+        arc(x, y + 18, 50, 36, 0, PI)
+        break
+
+      case 'triste':
+        // boca virada para baixo
+        stroke(80, 40, 20)
+        arc(x, y + 36, 50, 36, PI, TWO_PI)
+        break
+
+      case 'comendo':
+        // boca aberta
         noStroke()
-        ellipse(this.x, this.y, 120, 120)
-        noTint()
-        fill(30)
-        ellipse(this.x - 20, this.y - 10, 18, 20)
-        ellipse(this.x + 20, this.y - 10, 18, 20)
-        fill(255)
-        ellipse(this.x - 16, this.y - 12, 8, 10)
-        ellipse(this.x + 24, this.y - 12, 8, 10)
+        fill(80, 40, 20)
+        ellipse(x, y + 22, 30, 24)
+        break
+
+      case 'dormindo':
+        // olhos fechados (linhas) + boca neutra
+        stroke(80, 40, 20)
+        strokeWeight(3)
+        // sobrescreve os olhos com linhas fechadas
+        fill(this.cor.r, this.cor.g, this.cor.b)
+        noStroke()
+        ellipse(x - 22, y - 8, 28, 32)
+        ellipse(x + 22, y - 8, 28, 32)
+        stroke(80, 40, 20)
+        line(x - 32, y - 8, x - 10, y - 8)
+        line(x + 10, y - 8, x + 34, y - 8)
+        // ZZZ
+        noStroke()
+        fill(180, 180, 255)
+        textSize(14)
+        textAlign(LEFT, CENTER)
+        text('z z z', x + 36, y - 30)
+        break
+
+      default:
+        // idle — boca neutra
+        stroke(80, 40, 20)
+        line(x - 12, y + 22, x + 12, y + 22)
+        break
     }
+
+    noStroke()
+    strokeWeight(1)
+    textAlign(CENTER, CENTER) // restaura alinhamento padrão
+  }
 }

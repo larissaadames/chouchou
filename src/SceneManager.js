@@ -1,181 +1,259 @@
+// ─── SceneManager ─────────────────────────────────────────────────────────────
+// Controla qual cena está ativa e repassa update/draw/eventos.
+// ──────────────────────────────────────────────────────────────────────────────
+
 class SceneManager {
-    constructor() {
-        this.cenas = {}
-        this.cenaAtiva = null
+  constructor(chouchou) {
+    this.chouchou  = chouchou
+    this.cenas     = {}
+    this.cenaAtiva = null
 
-        this.registrar('home', new HomeScene(this))
-        this.registrar('comodos', new ComodoScene(this))
-        this.irPara('home')
+    // Registra todas as cenas do jogo
+    this.registrar('home',    new HomeScene(this))
+    this.registrar('comodos', new ComodoScene(this, chouchou))
+
+    // Cena inicial
+    this.irPara('home')
+  }
+
+  registrar(nome, cena) {
+    this.cenas[nome] = cena
+  }
+
+  irPara(nome) {
+    if (this.cenaAtiva?.aoSair)   this.cenaAtiva.aoSair()
+    this.cenaAtiva = this.cenas[nome]
+    if (this.cenaAtiva?.aoEntrar) this.cenaAtiva.aoEntrar()
+  }
+
+  update()       { this.cenaAtiva?.update()       }
+  draw()         { this.cenaAtiva?.draw()          }
+  mousePressed() { this.cenaAtiva?.mousePressed()  }
+}
+
+// ─── HomeScene ────────────────────────────────────────────────────────────────
+// Tela inicial com o nome do jogo e botão de entrada.
+// ──────────────────────────────────────────────────────────────────────────────
+
+class HomeScene {
+  constructor(manager) {
+    this.manager = manager
+
+    // Botão "Jogar"
+    this.btn = { x: 0, y: 0, w: 200, h: 56 }
+  }
+
+  aoEntrar() {
+    this.btn.x = width  / 2
+    this.btn.y = height / 2 + 60
+    console.log('[HomeScene] entrou')
+  }
+
+  update() {}
+
+  draw() {
+    background('#0d0d1a')
+
+    // Estrelinhas decorativas de fundo
+    this._estrelas()
+
+    // Nome do jogo
+    textAlign(CENTER, CENTER)
+    noStroke()
+
+    fill('#c084fc') // roxo suave
+    textSize(64)
+    textStyle(BOLD)
+    text('Chouchou', width / 2, height / 2 - 100)
+    textStyle(NORMAL)
+
+    fill(255, 255, 255, 160)
+    textSize(16)
+    text('seu bichinho virtual', width / 2, height / 2 - 40)
+
+    // Botão jogar
+    this._desenharBotao(this.btn.x, this.btn.y, 'JOGAR ▶')
+  }
+
+  _estrelas() {
+    // Estrelinhas fixas geradas com seed para não piscar
+    randomSeed(42)
+    fill(255, 255, 255, 80)
+    noStroke()
+    for (let i = 0; i < 60; i++) {
+      const sx = random(width)
+      const sy = random(height * 0.7)
+      const sr = random(1, 3)
+      ellipse(sx, sy, sr, sr)
+    }
+  }
+
+  _desenharBotao(x, y, label) {
+    const { w, h } = this.btn
+
+    // Sombra
+    fill(0, 0, 0, 60)
+    noStroke()
+    rect(x - w/2 + 4, y - h/2 + 4, w, h, 16)
+
+    // Corpo
+    fill('#7c3aed')
+    rect(x - w/2, y - h/2, w, h, 16)
+
+    // Brilho superior
+    fill(255, 255, 255, 30)
+    rect(x - w/2 + 4, y - h/2 + 4, w - 8, h/2 - 4, 12)
+
+    // Texto
+    fill(255)
+    textAlign(CENTER, CENTER)
+    textSize(20)
+    textStyle(BOLD)
+    text(label, x, y)
+    textStyle(NORMAL)
+  }
+
+  mousePressed() {
+    const { x, y, w, h } = this.btn
+    if (mouseX > x - w/2 && mouseX < x + w/2 &&
+        mouseY > y - h/2 && mouseY < y + h/2) {
+      this.manager.irPara('comodos')
+    }
+  }
+}
+
+// ─── ComodoScene ──────────────────────────────────────────────────────────────
+// Shell que gerencia navegação entre cômodos.
+// Cada cômodo é independente — só adicionar ao array para expandir.
+// ──────────────────────────────────────────────────────────────────────────────
+
+class ComodoScene {
+  constructor(manager, chouchou) {
+    this.manager   = manager
+    this.chouchou  = chouchou
+    this.indice    = 0
+
+    // ── Lista de cômodos ──────────────────────────────────────────────────
+    // Para adicionar um novo cômodo:
+    //   1. Crie src/comodos/NomeDoComodo.js
+    //   2. Adicione a tag <script> no index.html (antes do SceneManager)
+    //   3. Instancie aqui: new NomeDoComodo(chouchou)
+    this.comodos = [
+      new Quarto(chouchou),
+      new Cozinha(chouchou),
+      new Banheiro(chouchou),
+    ]
+
+    // Áreas de toque dos botões do HUD (calculadas no aoEntrar)
+    this.areaVoltar   = {}
+    this.areaSetaEsq  = {}
+    this.areaSetaDir  = {}
+  }
+
+  get comodoAtivo() {
+    return this.comodos[this.indice]
+  }
+
+  irProximo() {
+    this.indice = (this.indice + 1) % this.comodos.length
+  }
+
+  irAnterior() {
+    this.indice = (this.indice - 1 + this.comodos.length) % this.comodos.length
+  }
+
+  aoEntrar() {
+    // Inicializa a posição do Chouchou agora que o canvas existe
+    this.chouchou.inicializar()
+
+    // Calcula áreas de toque do HUD uma única vez
+    this.areaVoltar  = { x: 12,            y: 14, w: 80,  h: 38 }
+    this.areaSetaEsq = { x: width/2 - 140, y: 14, w: 42,  h: 38 }
+    this.areaSetaDir = { x: width/2 + 98,  y: 14, w: 42,  h: 38 }
+
+    console.log(`[ComodoScene] entrou → ${this.comodoAtivo.nome}`)
+  }
+
+  update() {
+    this.chouchou.update()
+    this.comodoAtivo.update()
+  }
+
+  draw() {
+    this.comodoAtivo.draw()  // fundo + cenário + Chouchou
+    this._hud()              // HUD sempre por cima
+  }
+
+  // ── HUD ───────────────────────────────────────────────────────────────────
+  _hud() {
+    // Faixa do topo semi-transparente
+    fill(0, 0, 0, 140)
+    noStroke()
+    rect(0, 0, width, 66)
+
+    // ── Botão Voltar ──────────────────────────────────────────────────────
+    const v = this.areaVoltar
+    fill(255, 255, 255, 25)
+    rect(v.x, v.y, v.w, v.h, 10)
+    fill(255)
+    noStroke()
+    textAlign(CENTER, CENTER)
+    textSize(13)
+    text('← Voltar', v.x + v.w/2, v.y + v.h/2)
+
+    // ── Seta esquerda ─────────────────────────────────────────────────────
+    const se = this.areaSetaEsq
+    fill(255, 255, 255, 25)
+    rect(se.x, se.y, se.w, se.h, 10)
+    fill(255)
+    textAlign(CENTER, CENTER)
+    textSize(22)
+    text('‹', se.x + se.w/2, se.y + se.h/2)
+
+    // ── Nome do cômodo ────────────────────────────────────────────────────
+    fill(255)
+    textAlign(CENTER, CENTER)
+    textSize(17)
+    textStyle(BOLD)
+    text(this.comodoAtivo.nome, width/2, 33)
+    textStyle(NORMAL)
+
+    // Indicador  ex: "1 / 3"
+    fill(255, 255, 255, 140)
+    textSize(11)
+    text(`${this.indice + 1} / ${this.comodos.length}`, width/2, 55)
+
+    // ── Seta direita ──────────────────────────────────────────────────────
+    const sd = this.areaSetaDir
+    fill(255, 255, 255, 25)
+    rect(sd.x, sd.y, sd.w, sd.h, 10)
+    fill(255)
+    textAlign(CENTER, CENTER)
+    textSize(22)
+    text('›', sd.x + sd.w/2, sd.y + sd.h/2)
+  }
+
+  // ── Detecção de clique ────────────────────────────────────────────────────
+  _dentroDA(area) {
+    return mouseX > area.x && mouseX < area.x + area.w &&
+           mouseY > area.y && mouseY < area.y + area.h
+  }
+
+  mousePressed() {
+    if (this._dentroDA(this.areaVoltar)) {
+      this.manager.irPara('home')
+      return
+    }
+    if (this._dentroDA(this.areaSetaEsq)) {
+      this.irAnterior()
+      return
+    }
+    if (this._dentroDA(this.areaSetaDir)) {
+      this.irProximo()
+      return
     }
 
-    registrar(nome, cena) {
-        this.cenas[nome] = cena
-    }
-
-    irPara(nome) {
-        if (this.cenaAtiva?.aoSair) this.cenaAtiva.aoSair()
-        this.cenaAtiva = this.cenas[nome]
-        if (this.cenaAtiva?.aoEntrar) this.cenaAtiva.aoEntrar()
-    }
-
-    update() { this.cenaAtiva?.update() }
-    draw()   { this.cenaAtiva?.draw()   }
-    mousePressed() { this.cenaAtiva?.mousePressed() }
-    }
-
-    // ── HOME ────────────────────────────────────────────────────────────────────
-
-    class HomeScene {
-    constructor(manager) { this.manager = manager }
-
-    aoEntrar() { console.log('Home') }
-    update() {}
-
-    draw() {
-        background('#0f3460')
-
-        fill('#e94560')
-        noStroke()
-        textAlign(CENTER, CENTER)
-        textSize(52)
-        text('POU', width / 2, height / 2 - 120)
-
-        fill(255)
-        textSize(18)
-        text('uma releitura', width / 2, height / 2 - 70)
-
-        this._botao(width / 2, height / 2 + 40, 'JOGAR')
-    }
-
-    _botao(x, y, label) {
-        const w = 180, h = 52
-        fill(0, 0, 0, 60)
-        noStroke()
-        rect(x - w/2 + 4, y - h/2 + 4, w, h, 14)
-        fill('#e94560')
-        rect(x - w/2, y - h/2, w, h, 14)
-        fill(255)
-        textSize(20)
-        textAlign(CENTER, CENTER)
-        text(label, x, y)
-    }
-
-    mousePressed() {
-        const w = 180, h = 52
-        const x = width / 2, y = height / 2 + 40
-        if (mouseX > x - w/2 && mouseX < x + w/2 &&
-            mouseY > y - h/2 && mouseY < y + h/2) {
-        this.manager.irPara('comodos')
-        }
-    }
-    }
-
-    // ── GERENCIADOR DE CÔMODOS ───────────────────────────────────────────────────
-
-    class ComodoScene {
-    constructor(manager) {
-        this.manager = manager
-        this.indice  = 0  // qual cômodo está visível agora
-
-        // lista de cômodos — só adicionar aqui quando criar um novo
-        this.comodos = [
-        new Quarto(),
-        new Cozinha(),
-        new Banheiro(),
-        ]
-    }
-
-    get comodoAtivo() {
-        return this.comodos[this.indice]
-    }
-
-    irProximo() {
-        this.indice = (this.indice + 1) % this.comodos.length
-    }
-
-    irAnterior() {
-        this.indice = (this.indice - 1 + this.comodos.length) % this.comodos.length
-    }
-
-    aoEntrar() { console.log('Cômodos') }
-
-    update() {
-        this.comodoAtivo.update()
-    }
-
-    draw() {
-        this.comodoAtivo.draw()   // deixa o cômodo desenhar o fundo e conteúdo
-        this._hud()               // HUD fica por cima de tudo
-    }
-
-    // HUD: barra do topo com nome e setas, botão voltar
-    _hud() {
-        // faixa do topo
-        fill(0, 0, 0, 120)
-        noStroke()
-        rect(0, 0, width, 64)
-
-        // botão voltar
-        fill(255, 255, 255, 30)
-        rect(12, 14, 70, 36, 10)
-        fill(255)
-        noStroke()
-        textAlign(CENTER, CENTER)
-        textSize(13)
-        text('← Voltar', 47, 32)
-
-        // seta esquerda
-        fill(255, 255, 255, 40)
-        rect(width/2 - 130, 14, 36, 36, 8)
-        fill(255)
-        textAlign(CENTER, CENTER)
-        textSize(18)
-        text('‹', width/2 - 112, 33)
-
-        // nome do cômodo
-        fill(255)
-        textAlign(CENTER, CENTER)
-        textSize(17)
-        textStyle(BOLD)
-        text(this.comodoAtivo.nome, width/2, 32)
-        textStyle(NORMAL)
-
-        // indicador de posição  ex: "2 / 3"
-        fill(255, 255, 255, 150)
-        textSize(11)
-        text(`${this.indice + 1} / ${this.comodos.length}`, width/2, 54)
-
-        // seta direita
-        fill(255, 255, 255, 40)
-        rect(width/2 + 94, 14, 36, 36, 8)
-        fill(255)
-        textAlign(CENTER, CENTER)
-        textSize(18)
-        text('›', width/2 + 112, 33)
-    }
-
-    mousePressed() {
-        // botão voltar
-        if (mouseX > 12 && mouseX < 82 && mouseY > 14 && mouseY < 50) {
-        this.manager.irPara('home')
-        return
-        }
-
-        // seta esquerda
-        if (mouseX > width/2 - 130 && mouseX < width/2 - 94 &&
-            mouseY > 14 && mouseY < 50) {
-        this.irAnterior()
-        return
-        }
-
-        // seta direita
-        if (mouseX > width/2 + 94 && mouseX < width/2 + 130 &&
-            mouseY > 14 && mouseY < 50) {
-        this.irProximo()
-        return
-        }
-
-        // repassa o clique para o cômodo (para interações futuras)
-        this.comodoAtivo.mousePressed()
-    }
+    // Repassa o clique para o cômodo (interações futuras)
+    this.comodoAtivo.mousePressed()
+  }
 }

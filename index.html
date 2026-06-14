@@ -1,21 +1,35 @@
 <!DOCTYPE html>
 <html lang="pt-br">
-    <head>
+  <head>
     <meta charset="UTF-8" />
-    <title>POU Releitura</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chouchou</title>
     <style>
       * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { background: #1a1a2e; display: flex; justify-content: center; align-items: center; height: 100vh; }
+      body {
+        background: #111;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      }
     </style>
-    </head>
-    <body>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.4/p5.min.js"></script>
+  </head>
+  <body>
+    <!-- p5.js via CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.4/p5.min.js"></script>
 
-      <!-- cômodos primeiro, pois SceneManager instancia eles -->
-      <script src="src/comodos/Quarto.js"></script>
-      <script src="src/comodos/Cozinha.js"></script>
-      <script src="src/comodos/Banheiro.js"></script>
+    <!-- cômodos (carregados antes do SceneManager, pois ele os instancia) -->
+    <script src="src/comodos/Quarto.js"></script>
+    <script src="src/comodos/Cozinha.js"></script>
+    <script src="src/comodos/Banheiro.js"></script>
 
-      <script src="src/SceneManager.js"></script>
-      <script src="sketch.js"></script>
+    <!-- classes principais -->
+    <script src="src/Chouchou.js"></script>
+    <script src="src/ChouchouLoader.js"></script>
+    <script src="src/SceneManager.js"></script>
+
+    <!-- entrada do jogo -->
+    <script src="sketch.js"></script>
+  </body>
 </html>
