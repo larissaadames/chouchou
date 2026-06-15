@@ -31,33 +31,33 @@ const CATALOGO_COMIDAS = {
   nitrogenio: {
     id:        'nitrogenio',
     nome:      'Nitrogênio',
-    simbolo:   'N',       // símbolo químico exibido no ícone
-    cor:       '#4ade80', // verde
+    simbolo:   'N',
+    cor:       '#4ade80',
     corEscura: '#15803d',
     fome:      +20,
-    imagem:    loadImage('assets/sprites/elementos/nitrogenio_N.png'),       // quanto aumenta a fome ao comer
+    imagem:    null, // carregado em carregarElementos() no ChouchouLoader.js
   },
 
   // ── Próximos elementos (comentados — descomente quando quiser adicionar) ──
   // fosforo: {
   //   id: 'fosforo', nome: 'Fósforo', simbolo: 'P',
-  //   cor: '#fb923c', corEscura: '#c2410c', fome: +15,
+  //   cor: '#fb923c', corEscura: '#c2410c', fome: +15, imagem: null,
   // },
   // potassio: {
   //   id: 'potassio', nome: 'Potássio', simbolo: 'K',
-  //   cor: '#a78bfa', corEscura: '#6d28d9', fome: +18,
+  //   cor: '#a78bfa', corEscura: '#6d28d9', fome: +18, imagem: null,
   // },
   // calcio: {
   //   id: 'calcio', nome: 'Cálcio', simbolo: 'Ca',
-  //   cor: '#f9a8d4', corEscura: '#be185d', fome: +12,
+  //   cor: '#f9a8d4', corEscura: '#be185d', fome: +12, imagem: null,
   // },
   // magnesio: {
   //   id: 'magnesio', nome: 'Magnésio', simbolo: 'Mg',
-  //   cor: '#67e8f9', corEscura: '#0e7490', fome: +10,
+  //   cor: '#67e8f9', corEscura: '#0e7490', fome: +10, imagem: null,
   // },
   // enxofre: {
   //   id: 'enxofre', nome: 'Enxofre', simbolo: 'S',
-  //   cor: '#fde047', corEscura: '#a16207', fome: +8,
+  //   cor: '#fde047', corEscura: '#a16207', fome: +8, imagem: null,
   // },
 }
 
@@ -140,7 +140,7 @@ class FoodSystem {
     this._desenharGeladeira()
     if (this.menuAberto) this._desenharMenu()
     if (this.itemAtivo)  {
-      this._desenharElemento(
+        this._desenharElemento(
         this.itemAtivo.x,
         this.itemAtivo.y,
         this.itemAtivo,
@@ -325,37 +325,42 @@ class FoodSystem {
     })
   }
 
-  // Desenha o ícone de um elemento numa posição com escala opcional
   _desenharElemento(x, y, def, escala = 1.0) {
     push()
     translate(x, y)
     scale(escala)
+    noStroke()
 
     // Sombra
-    noStroke()
     fill(0, 0, 0, 40)
     ellipse(2, 4, 56, 56)
 
-    // Círculo principal
-    fill(def.cor)
-    ellipse(0, 0, 52, 52)
+    if (def.imagem) {
+      // PNG do elemento
+      imageMode(CENTER)
+      image(def.imagem, 0, 0, 80, 80)
+    } else {
+      // Fallback: círculo com símbolo químico
+      fill(def.cor)
+      ellipse(0, 0, 52, 52)
 
-    // Brilho interno
-    fill(255, 255, 255, 60)
-    ellipse(-8, -10, 20, 16)
+      // Brilho interno (só no fallback, ficaria estranho sobre PNG)
+      fill(255, 255, 255, 60)
+      ellipse(-8, -10, 20, 16)
 
-    // Símbolo químico
-    fill('#fff')
-    textAlign(CENTER, CENTER)
-    textSize(def.simbolo.length > 1 ? 14 : 18)
-    textStyle(BOLD)
-    text(def.simbolo, 0, 0)
-    textStyle(NORMAL)
+      fill('#fff')
+      textAlign(CENTER, CENTER)
+      textSize(def.simbolo.length > 1 ? 14 : 18)
+      textStyle(BOLD)
+      text(def.simbolo, 0, 0)
+      textStyle(NORMAL)
+    }
 
-    // Nome abaixo do ícone
+    // Nome abaixo do ícone (sempre visível)
     fill(255, 255, 255, 200)
+    textAlign(CENTER, CENTER)
     textSize(9)
-    text(def.nome, 0, 34)
+    text(def.nome, 0, 50)
 
     pop()
   }

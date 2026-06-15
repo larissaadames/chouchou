@@ -30,3 +30,30 @@ Quer testar como fica primeiro e ajustar depois?
 
 
 Para adicionar comodo é só adicionar o comodo.js dentro do folder comodos -> adicionar o comodo no index.js e adicionar ele no this.comodos do SceneManager.js.
+
+---
+
+### 2. Adicionar novos elementos
+
+Quando quiser adicionar Fósforo por exemplo, são 3 passos:
+
+**`FoodSystem.js`** — descomentar no catálogo:
+```js
+fosforo: {
+  id: 'fosforo', nome: 'Fósforo', simbolo: 'P',
+  cor: '#fb923c', corEscura: '#c2410c', fome: +15,
+  imagem: null,
+},
+```
+
+**`ChouchouLoader.js`** — carregar o PNG:
+```js
+CATALOGO_COMIDAS.fosforo.imagem = loadImage('assets/sprites/elementos/fosforo_P.png')
+```
+
+**`FoodSystem.js`** — adicionar ao inventário do jogador:
+```js
+this.inventario = ['nitrogenio', 'fosforo']
+```
+
+Pronto — o menu da geladeira já vai exibir os dois automaticamente.

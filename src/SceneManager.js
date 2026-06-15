@@ -73,7 +73,7 @@ class HomeScene {
     text('seu bichinho virtual', width / 2, height / 2 - 40)
 
     // Botão jogar
-    this._desenharBotao(this.btn.x, this.btn.y, 'JOGAR ▶')
+    this._desenharBotao(this.btn.x, this.btn.y, 'JOGAR ->')
   }
 
   _estrelas() {
@@ -226,7 +226,7 @@ class ComodoScene {
       text(stat.icone, cx, faixaY + 14)
 
       fill(255, 255, 255, 200)
-      textSize(11)
+      textSize(20)
       text(chave.toUpperCase(), cx, faixaY + 30)
 
       // ── Barra de fundo (trilha) ───────────────────────────────────────────

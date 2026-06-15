@@ -19,17 +19,19 @@
     <!-- p5.js via CDN -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.4/p5.min.js"></script>
 
-    <!-- cômodos (carregados antes do SceneManager, pois ele os instancia) -->
+    <!-- classes principais (carregadas primeiro) -->
+    <script src="src/Chouchou.js"></script>
     <script src="src/FoodSystem.js"></script>
+    <script src="src/ChouchouLoader.js"></script>
+
+    <!-- cômodos (dependem das classes acima) -->
     <script src="src/comodos/Quarto.js"></script>
     <script src="src/comodos/Cozinha.js"></script>
     <script src="src/comodos/Banheiro.js"></script>
     <script src="src/comodos/Jardim.js"></script>
     <script src="src/comodos/SalaJogos.js"></script>
 
-    <!-- classes principais -->
-    <script src="src/Chouchou.js"></script>
-    <script src="src/ChouchouLoader.js"></script>
+    <!-- SceneManager (depende dos cômodos) -->
     <script src="src/SceneManager.js"></script>
 
     <!-- entrada do jogo -->

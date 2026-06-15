@@ -30,7 +30,7 @@ function carregarSpritesChouchou(chouchou) {
     feliz:      loadImage('assets/sprites/expressoes/ccFeliz.png'),
     bocaAberta: loadImage('assets/sprites/expressoes/ccBocaAberta.png'), // boca aberta
     comendo: [ loadImage('assets/sprites/expressoes/ccBocaAberta.png'), // boca aberta
-    loadImage('assets/sprites/expressoes/ccBocaFechada.png')], // boca fechada, // mastigando
+              loadImage('assets/sprites/expressoes/ccBocaFechada.png')], // boca fechada, // mastigando
     // quando ccComendo2.png existir:
     // comendo usa frameAtual para alternar corpo, mas expressão é única por estado.
     // Para alternar expressão também, usaremos sprites.expressaoFrames no futuro.
@@ -44,3 +44,7 @@ function carregarSpritesChouchou(chouchou) {
   chouchou.sprites.chapeu = null // ex: loadImage('assets/sprites/acessorios/chapeu.png')
 }
 
+function carregarElementos() {
+  CATALOGO_COMIDAS.nitrogenio.imagem = loadImage('assets/sprites/elementos/nitrogenio_N.png')
+  // futuros elementos aqui
+}

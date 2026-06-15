@@ -12,13 +12,14 @@ let fonteCustomizada
 function preload() {
   chouchou = new Chouchou()
   carregarSpritesChouchou(chouchou) // preenche os sprites quando os PNGs existirem
-
+  carregarElementos()
   fonteCustomizada = loadFont('assets/fonts/Pou-RMR6.ttf')
 }
 
 // ─── setup ────────────────────────────────────────────────────────────────────
 function setup() {
   createCanvas(LARGURA, ALTURA)
+  textFont(fonteCustomizada)
   sceneManager = new SceneManager(chouchou)
 }
 

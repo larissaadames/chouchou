@@ -19,10 +19,10 @@ class Chouchou {
     // O decaimento por tempo vem na próxima etapa — por enquanto os valores
     // são fixos para que a HUD já apareça corretamente.
     this.stats = {
-      fome:  { valor: 80, max: 100, cor: '#f97316', icone: '🍖' }, // laranja
-      humor: { valor: 60, max: 100, cor: '#a855f7', icone: '⭐' }, // roxo
-      hidratacao: { valor: 50, max: 100, cor: '#3b82f6', icone: '💧' }, // azul
-      energia: { valor: 90, max: 100, cor: '#facc15', icone: '⚡' }, // amarelo
+      fome:  { valor: 80, max: 100, cor: '#f97316' }, // laranja
+      humor: { valor: 60, max: 100, cor: '#a855f7' }, // roxo
+      hidratação: { valor: 50, max: 100, cor: '#3b82f6'}, // azul
+      energia: { valor: 90, max: 100, cor: '#facc15'}, // amarelo
     }
 
     
