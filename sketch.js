@@ -1,6 +1,6 @@
 // ─── Configurações globais ────────────────────────────────────────────────────
-const LARGURA = 390
-const ALTURA  = 844
+const LARGURA = 1080
+const ALTURA  = 720
 
 // Instâncias globais acessíveis por todos os módulos
 let sceneManager

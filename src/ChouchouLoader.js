@@ -26,7 +26,7 @@ function carregarSpritesChouchou(chouchou) {
   chouchou.sprites.expressao = {
     idle:     loadImage('assets/sprites/expressoes/ccBravo.png'), // ex: loadImage('assets/sprites/expressoes/idle.png')
     feliz:    loadImage('assets/sprites/expressoes/ccFeliz.png'),
-    comendo:  null,
+    comendo:  loadImage('assets/sprites/expressoes/ccComendo1.png'),
     triste:   loadImage('assets/sprites/expressoes/ccMal.png'),
     dormindo: null,
   }
