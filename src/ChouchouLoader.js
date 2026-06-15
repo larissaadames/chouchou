@@ -35,5 +35,9 @@ function carregarSpritesChouchou(chouchou) {
   chouchou.sprites.roupa = null,// ex: loadImage('assets/sprites/roupas/pijama.png')
 
   chouchou.sprites.chapeu = null // ex: loadImage('assets/sprites/acessorios/chapeu.png')
+}
 
+
+function carregarSpritesComidas(){
+  
 }
