@@ -25,22 +25,25 @@ class PopupMinijogos {
   }
 
   update() {
-
     if (this.tempoErro > 0) {
       this.tempoErro--;
+      
+      // BOA PRÁTICA: Verificação dinâmica. Se o Chouchou já se recuperou,
+      // removemos o aviso imediatamente da tela sem esperar o timer zerar.
+      if (this.chouchou.podeJogar().apto) {
+        this.tempoErro = 0;
+        this.mensagemErro = "";
+      }
     }
-    
+
     if (this.arrastandoScroll) {
       let deltaY = mouseY - this.mouseAntigoScrollY;
-      
       if (Math.abs(deltaY) > 3) {
         this.arrastou = true;
         this.jogoPressionado = null;
       }
-
       this.scrollOffset += deltaY;
       this.mouseAntigoScrollY = mouseY;
-
       if (this.scrollOffset > 0) this.scrollOffset = 0;
     }
   }
@@ -200,6 +203,9 @@ class PopupMinijogos {
     if (mouseX > this.btnFechar.x && mouseX < this.btnFechar.x + this.btnFechar.w &&
         mouseY > this.btnFechar.y && mouseY < this.btnFechar.y + this.btnFechar.h) {
       this.aberto = false;
+      
+      this.tempoErro = 0;
+      this.mensagemErro = "";
       return;
     }
 

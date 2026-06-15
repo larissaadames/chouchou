@@ -1,5 +1,7 @@
 class MinijogoBase {
+  // 1. RECEBENDO OS PARÂMETROS DE VOLTA AQUI
   constructor(manager, chouchou) {
+    this.manager = manager;
     this.chouchou = chouchou;
     
     this.estado = 'INICIO'; 
@@ -13,20 +15,28 @@ class MinijogoBase {
     this.btnSairPausa = { x: meioX - 100, y: meioY + 40, w: 200, h: 50 };
 
     this.recompensas = null; 
+
+    // Controle do aviso na tela caso os status estejam baixos
+    this.mensagemErro = "";
+    this.tempoErro = 0;
   }
 
-  // ── CICLO DE VIDA (Chamado automaticamente pelo SceneManager) ──
   aoEntrar() {
     this.estado = 'INICIO';
     this.pontuacao = 0;
     this.recompensas = null;
+    this.mensagemErro = "";
+    this.tempoErro = 0;
   }
 
-  // Ganchos customizáveis para os efeitos sonoros das subclasses
   aoPausar() {}
   aoRetomar() {}
 
   update() {
+    if (this.tempoErro > 0) {
+      this.tempoErro--;
+    }
+
     if (this.estado === 'A_JOGAR') {
       this.atualizar(); 
     }
@@ -50,6 +60,11 @@ class MinijogoBase {
       this.desenhar(); 
       this._desenharGameOver();
     }
+
+    // Desenha o aviso de erro por cima de tudo se ele existir
+    if (this.tempoErro > 0) {
+      this._desenharAvisoErro();
+    }
     pop();
   }
 
@@ -60,10 +75,21 @@ class MinijogoBase {
     };
 
     if (this.estado === 'INICIO') {
+      // Como manager agora existe, o sairDoJogo() vai funcionar e não vai te prender
       if (clicouNoBotao(this.btnTopoEsq)) {
         this.sairDoJogo(); 
         return;
       }
+
+      // BLOQUEIO: Impede o jogo de iniciar
+      let condicao = this._verificarStatus();
+      if (!condicao.apto) {
+        this.mensagemErro = condicao.motivo;
+        this.tempoErro = 120;
+        this.chouchou.setEstado('triste');
+        return; 
+      }
+
       this.pontuacao = 0;
       this.recompensas = null;
       this.estado = 'A_JOGAR';
@@ -72,7 +98,7 @@ class MinijogoBase {
     else if (this.estado === 'A_JOGAR') {
       if (clicouNoBotao(this.btnTopoEsq)) {
         this.estado = 'PAUSADO'; 
-        this.aoPausar(); // <--- CORREÇÃO: Avisa o minijogo para pausar a música
+        this.aoPausar();
         return;
       }
       this.clicar(); 
@@ -80,7 +106,7 @@ class MinijogoBase {
     else if (this.estado === 'PAUSADO') {
       if (clicouNoBotao(this.btnContinuar)) {
         this.estado = 'A_JOGAR'; 
-        this.aoRetomar(); // <--- CORREÇÃO: Avisa o minijogo para continuar a música
+        this.aoRetomar();
         return;
       }
       if (clicouNoBotao(this.btnSairPausa)) {
@@ -89,12 +115,32 @@ class MinijogoBase {
       }
     }
     else if (this.estado === 'GAMEOVER') {
+      // Como manager agora existe, isso não vai mais travar
       if (clicouNoBotao(this.btnTopoEsq)) {
         this.sairDoJogo();
         return;
       }
+
+      // BLOQUEIO: Impede de tentar jogar de novo
+      let condicao = this._verificarStatus();
+      if (!condicao.apto) {
+        this.mensagemErro = condicao.motivo;
+        this.tempoErro = 120;
+        this.chouchou.setEstado('triste');
+        return; 
+      }
+
       this.estado = 'INICIO';
     }
+  }
+
+  _verificarStatus() {
+    const limiteMinimo = 20;
+    if (this.chouchou.stats.energia.valor < limiteMinimo) return { apto: false, motivo: "Estou sem energia!" };
+    if (this.chouchou.stats.fome.valor < limiteMinimo) return { apto: false, motivo: "Estou com muita fome!" };
+    if (this.chouchou.stats.hidratação.valor < limiteMinimo) return { apto: false, motivo: "Estou com muita sede!" };
+    
+    return { apto: true, motivo: "" };
   }
 
   darGameOver() {
@@ -124,7 +170,7 @@ class MinijogoBase {
     let qtdElementosGanhos = Math.floor(this.pontuacao / 100);
 
     if (qtdElementosGanhos > 0) {
-      let chavesCatalogo = Object.keys(CATALOGO_COMIDAS);
+      let chavesCatalogo = Object.keys(CATALOGO_COMIDAS || {});
 
       for (let i = 0; i < qtdElementosGanhos; i++) {
         let idSorteado = random(chavesCatalogo);
@@ -151,7 +197,21 @@ class MinijogoBase {
   }
 
   sairDoJogo() {
-    sceneManager.irPara('comodos'); 
+    this.manager.irPara('comodos'); 
+  }
+
+  _desenharAvisoErro() {
+    push();
+    fill(239, 68, 68, 220); 
+    noStroke();
+    rectMode(CENTER);
+    rect(width / 2, height / 2 + 120, 280, 50, 16);
+    fill(255);
+    textAlign(CENTER, CENTER);
+    textSize(16);
+    textStyle(BOLD);
+    text(this.mensagemErro, width / 2, height / 2 + 120);
+    pop();
   }
 
   _desenharEcraInicio() {
