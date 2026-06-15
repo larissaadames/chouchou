@@ -56,7 +56,7 @@ class Jardim {
 
       // ── Emite gotas quando o bico está acima do Chouchou ─────────────────
       const bico = this._posicaoBico()
-      const dentroAlcance = dist(bico.x, bico.y, this.chouchou.x, this.chouchou.y) < 100 // Aumentado um pouco o alcance
+      const dentroAlcance = dist(bico.x, bico.y, this.chouchou.x, this.chouchou.y - 100) < 180 // Aumentado um pouco o alcance
 
       if (dentroAlcance) {
         // Spawna 2 gotas por frame
@@ -83,7 +83,7 @@ class Jardim {
     // ── Atualiza gotas existentes ─────────────────────────────────────────
     for (const g of this.gotas) {
       g.y     += g.vy
-      g.alpha -= 8
+      g.alpha -= 4
     }
     // Remove gotas invisíveis
     this.gotas = this.gotas.filter(g => g.alpha > 0)
@@ -105,7 +105,7 @@ class Jardim {
     noStroke()
     for (const g of this.gotas) {
       fill(96, 165, 250, g.alpha) // azul claro
-      ellipse(g.x, g.y, 6, 9)
+      ellipse(g.x, g.y, 12, 18)
     }
 
     // ── Camada 4: Regador (IMAGEM) ─────────────────────────────────────────
@@ -116,7 +116,7 @@ class Jardim {
       fill(255, 255, 255, 180)
       noStroke()
       textAlign(CENTER, CENTER)
-      textSize(13)
+      textSize(30)
       text('Arraste o regador até o Chuchu', width / 2, height * 0.88)
     }
   }

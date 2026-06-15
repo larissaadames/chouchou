@@ -46,6 +46,13 @@ class FoodSystem {
       this.itemAtivo.y = mouseY
 
       const perto = dist(mouseX, mouseY, this.chouchou.x, this.chouchou.y) < this.RAIO_COMER
+
+      // Checa se está perto E se a boca AINDA NÃO está aberta
+      if (perto && this.chouchou.estado !== 'bocaAberta') {
+        let somNhaa = random(SONS_CHOUCHOU.nhaa) // Sorteia uma variação
+        !somNhaa.isPlaying() ? somNhaa.play() : somNhaa.stop() && somNhaa.play()
+      }
+
       this.chouchou.setEstado(perto ? 'bocaAberta' : 'idle')
     }
   }
@@ -109,6 +116,12 @@ class FoodSystem {
   }
 
   _alimentar(item) {
+    // toca o som de comer (sorteando uma variação para não ficar repetitivo)
+    let somNham = random(SONS_CHOUCHOU.nham)
+    if (!somNham.isPlaying()) {
+      somNham.play()
+    }
+
     this.chouchou._alterarStat('fome', item.fome)
     this.chouchou.setEstado('comendo')
     

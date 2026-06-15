@@ -70,7 +70,7 @@ class Chouchou {
     this.x = width  / 2
     // Sobe um pouco do centro para não ficar escondido atrás da HUD de stats
     // (faixa de stats = 72px no rodapé, então deslocamos 36px para cima)
-    this.y = height / 2 - 36
+    this.y = height / 2 + 40
   }
 
   // ── Troca de estado ───────────────────────────────────────────────────────
@@ -103,13 +103,13 @@ class Chouchou {
   // Verifica se um ponto (px, py) está sobre o corpo do Chouchou.
   // Raio de 90 = metade dos 180px de tamanho de exibição do sprite.
   foiTocado(px, py) {
-    return dist(px, py, this.x, this.y) < 90
+    return dist(px, py, this.x, this.y) < 130
   }
-
+  
   // Toque carinhoso — aumenta humor, reage visualmente.
   // Qualquer cômodo pode chamar isso no mousePressed().
   tocar() {
-    this._alterarStat('humor', +12)
+    this._alterarStat('humor', +random(1, 3)) // aumenta humor aleatoriamente entre 1 e 3
     this.setEstado('feliz')
     setTimeout(() => this.setEstado('idle'), 1500)
   }
@@ -148,7 +148,7 @@ class Chouchou {
 
     // Tamanho fixo de renderização — todos os sprites são desenhados
     // nesse tamanho independente da resolução do PNG.
-    const S = 180
+    const S = 300
 
     // ── Camada 1: corpo com cor do usuário ──────────────────────────────────
     const frames = this.sprites.corpo[this.estado] ?? []

@@ -14,6 +14,7 @@ function preload() {
   carregarSpritesChouchou(chouchou)
   carregarCenarios()
   carregarElementos()
+  carregarSons();
   fonteCustomizada = loadFont('assets/fonts/Pou-RMR6.ttf')
 }
 

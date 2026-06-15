@@ -66,3 +66,24 @@ function carregarElementos() {
   SPRITES_CHAPEU.panela  = loadImage('assets/sprites/chapeu/panela.png');
 
 }
+
+// SONS DO CHOUCHOU --------------------------------------------- 
+
+const SONS_CHOUCHOU = {}
+
+function carregarSons() {
+
+// Array com os sons de toque/carinho
+  SONS_CHOUCHOU.nhaa = [
+    loadSound('assets/sounds/chouchou/som_nhaa_01.wav'),
+    loadSound('assets/sounds/chouchou/som_nhaa_02.wav')
+  ];
+
+  // Array com as variações de mastigação
+  SONS_CHOUCHOU.nham = [
+    loadSound('assets/sounds/chouchou/som_nham_01.wav'),
+    loadSound('assets/sounds/chouchou/som_nham_02.wav'),
+    loadSound('assets/sounds/chouchou/som_nham_03.wav'),
+    loadSound('assets/sounds/chouchou/som_nham_04.wav')
+  ];
+}
