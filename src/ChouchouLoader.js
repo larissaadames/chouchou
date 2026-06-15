@@ -41,6 +41,7 @@ function carregarCenarios() {
   SPRITES_CENARIO.quarto         = loadImage('assets/sprites/fundos/quarto.png')
   SPRITES_CENARIO.jardim         = loadImage('assets/sprites/fundos/jardim.png')
   SPRITES_CENARIO.salajogos      = loadImage('assets/sprites/fundos/salajogos.png')
+  SPRITES_CENARIO.food_drop       = loadImage('assets/sprites/fundos/food_drop.png')
 }
 
 // ── Elementos químicos ────────────────────────────────────────────────────────
@@ -61,6 +62,7 @@ function carregarElementos() {
   SPRITES_OBJETOS.regador            = loadImage('assets/sprites/objetos/regador.png')
   SPRITES_OBJETOS.armario            = loadImage('assets/sprites/objetos/armario.png')
   SPRITES_OBJETOS.disparervilha = loadImage('assets/sprites/objetos/disparervilha.png')
+  SPRITES_OBJETOS.sol = loadImage('assets/sprites/objetos/sol.png')
 
   SPRITES_ROUPAS.camisa10 = loadImage('assets/sprites/roupas/camisa10.png')
   SPRITES_ROUPAS.saia     = loadImage('assets/sprites/roupas/saia.png')
@@ -68,6 +70,13 @@ function carregarElementos() {
   SPRITES_CHAPEU.caule   = loadImage('assets/sprites/chapeu/caule.png');
   SPRITES_CHAPEU.lacinho = loadImage('assets/sprites/chapeu/lacinho.png');
   SPRITES_CHAPEU.panela  = loadImage('assets/sprites/chapeu/panela.png');
+
+}
+const SPRITES_PREVIEWS = {}
+
+function carregarPreviews(){
+  SPRITES_PREVIEWS.jogocomida = loadImage('assets/sprites/previews/food_drop.png');
+  // SPRITES_PREVIEWS.jogoqueda = loadImage('assets/sprites/previews/free_fall.png');
 
 }
 
@@ -94,4 +103,9 @@ function carregarSons() {
   SONS_CHOUCHOU.musica_fooddrop = loadSound('assets/sounds/songs/fooddrop.mp3');
   SONS_CHOUCHOU.game_over = loadSound('assets/sounds/effects/game-over.mp3');
   SONS_CHOUCHOU.sun_pickup = loadSound('assets/sounds/effects/sun-pickup.mp3');
+  SONS_CHOUCHOU.free_fall = loadSound('assets/sounds/songs/free-fall.mp3');
 }
+
+
+
+

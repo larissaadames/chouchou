@@ -127,7 +127,15 @@ class JogoComida extends MinijogoBase {
   }
 
   desenhar() {
-    background('#fef08a'); 
+
+    if (typeof SPRITES_CENARIO !== 'undefined' && SPRITES_CENARIO.food_drop) {
+      imageMode(CORNER);
+      image(SPRITES_CENARIO.food_drop, 0, 0, width, height);
+    } else {
+      
+      background('#fef08a'); 
+
+    }
     noStroke();
 
     // ── DESENHAR O CHOUCHOU ──
@@ -174,13 +182,13 @@ class JogoComida extends MinijogoBase {
 
     this.desenharVidas();
 
-    if (frameCount % 30 === 0) this.fpsEstavel = frameRate();
-    push();
-    textFont('sans-serif'); 
-    fill(this.fpsEstavel > 45 ? '#16a34a' : '#dc2626');
-    textSize(20);
-    textAlign(LEFT, TOP);
-    text("FPS: " + this.fpsEstavel.toFixed(0), 40, 80);
+    // if (frameCount % 30 === 0) this.fpsEstavel = frameRate();
+    // push();
+    // textFont('sans-serif'); 
+    // fill(this.fpsEstavel > 45 ? '#16a34a' : '#dc2626');
+    // textSize(20);
+    // textAlign(LEFT, TOP);
+    // text("FPS: " + this.fpsEstavel.toFixed(0), 40, 80);
     pop();
   }
 

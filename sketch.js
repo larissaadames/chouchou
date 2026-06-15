@@ -15,6 +15,7 @@ function preload() {
   carregarCenarios()
   carregarElementos()
   carregarSons();
+  carregarPreviews();
   fonteCustomizada = loadFont('assets/fonts/Pou-RMR6.ttf')
 }
 

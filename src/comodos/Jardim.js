@@ -43,7 +43,7 @@ class Jardim {
     // ── SISTEMA DE SÓIS (Energia) ──────────────────────────────────────────────
     this.sois = [];
     this.tempoUltimoSol = 0;
-    this.intervaloSol = random(8000, 15000); // Aparece entre 8 e 15 segundos
+    this.intervaloSol = random(3000, 8000); // Aparece entre 3 e 8 segundos
   }
 
   update() {
@@ -62,7 +62,7 @@ class Jardim {
     if (this.tempoUltimoSol >= this.intervaloSol) {
       this.gerarSol();
       this.tempoUltimoSol = 0;
-      this.intervaloSol = random(4000, 10000); 
+      this.intervaloSol = random(3000, 8000); 
     }
 
     for (let i = this.sois.length - 1; i >= 0; i--) {
@@ -121,9 +121,9 @@ class Jardim {
       x: random(80, width - 80),
       y: -60, 
       velocidade: random(1.5, 2.5), 
-      tamanho: 60,
+      tamanho: random(100, 150), 
       angulo: random(TWO_PI),
-      velAngulo: random(0.01, 0.03) 
+      velAngulo: random(0.01, 0.04) // Velocidade de rotação contínua
     });
   }
 
@@ -139,22 +139,26 @@ class Jardim {
     // ── Camada 2: Chouchou ──────────────────────────────────────────────────
     this.chouchou.draw()
 
-    // ── Camada 3: Sóis (Energia) ────────────────────────────────────────────
+    // ── Camada 3: Sóis Rotacionando (Energia) ────────────────────────────────
     for (let sol of this.sois) {
       push();
       translate(sol.x, sol.y);
       rotate(sol.angulo);
-      noStroke();
+      imageMode(CENTER);
 
-      // Placeholder do Sol: um círculo amarelo com raios
-      fill('#fef08a'); 
-      for (let r = 0; r < 8; r++) {
-        rotate(TWO_PI / 8);
-        ellipse(0, 35, 12, 24);
+      // Se a imagem real do Sol existir, desenha-a. Se não, usa o fallback geométrico
+      if (typeof SPRITES_OBJETOS !== 'undefined' && SPRITES_OBJETOS.sol) {
+        image(SPRITES_OBJETOS.sol, 0, 0, sol.tamanho, sol.tamanho);
+      } else {
+        noStroke();
+        fill('#fef08a'); 
+        for (let r = 0; r < 8; r++) {
+          rotate(TWO_PI / 8);
+          ellipse(0, 35, 12, 24);
+        }
+        fill('#facc15'); 
+        ellipse(0, 0, sol.tamanho, sol.tamanho);
       }
-      fill('#facc15'); 
-      ellipse(0, 0, sol.tamanho, sol.tamanho);
-      
       pop();
     }
 
@@ -181,9 +185,8 @@ class Jardim {
   // ── Desenha o regador usando o Sprite PNG ──────────────────────────────────
   _desenharRegador(x, y) {
     push()
-    // Verifica se a imagem global foi carregada antes de tentar desenhar
     if (typeof SPRITES_OBJETOS !== 'undefined' && SPRITES_OBJETOS.regador) {
-      imageMode(CENTER) // Desenha a partir do centro (x, y)
+      imageMode(CENTER) 
       image(
         SPRITES_OBJETOS.regador,
         x,
@@ -192,7 +195,6 @@ class Jardim {
         this.regador.visualH
       )
     } else {
-      // Fallback visual caso a imagem não carregue (retângulo azul)
       rectMode(CENTER)
       fill('#38bdf8')
       rect(x, y, 100, 80, 8)
@@ -206,7 +208,6 @@ class Jardim {
 
   // ── Posição EXATA do bico do regador baseado na imagem ───────────────────
   _posicaoBico() {
-    // Soma a posição do centro do regador com os ajustes definidos no constructor
     return { 
       x: this.regador.x + this.bicoOffset.x, 
       y: this.regador.y + this.bicoOffset.y 
@@ -215,36 +216,40 @@ class Jardim {
 
   // ── Eventos de mouse ──────────────────────────────────────────────────────
   mousePressed() {
-    // Verifica se o jogador clicou num dos Sóis caindo
+    // PRIORIDADE 1: Verifica se o jogador clicou num dos Sóis caindo
     for (let i = this.sois.length - 1; i >= 0; i--) {
       let sol = this.sois[i];
-      if (dist(mouseX, mouseY, sol.x, sol.y) < sol.tamanho) {
-        // Coletou o sol! Aumenta a energia
-        this.chouchou._alterarStat('energia', random(5, 10));
-        this.chouchou.setEstado('feliz')
-        setTimeout(() => this.chouchou.setEstado('idle'), 800)
+      if (dist(mouseX, mouseY, sol.x, sol.y) < sol.tamanho * 0.6) { // 0.6 para ajustar o raio de clique ao círculo central do sol
+        // 1. Modifica o status do pet
+        this.chouchou._alterarStat('energia', random(10, 25));
+        this.chouchou.setEstado('feliz');
+        setTimeout(() => this.chouchou.setEstado('idle'), 800);
         
+        // 2. Toca o som de pegar o sol
+        if (typeof SONS_CHOUCHOU !== 'undefined' && SONS_CHOUCHOU.sun_pickup) {
+          SONS_CHOUCHOU.sun_pickup.play();
+        }
+        
+        // 3. Destrói o objeto da tela
         this.sois.splice(i, 1);
         return true; 
       }
     }
 
-    // Verifica se clicou próximo ao corpo do regador para arrastar
-    // Usamos a maior dimensão visual para definir o raio de clique
+    // PRIORIDADE 2: Verifica se clicou próximo ao corpo do regador para arrastar
     let raioClique = max(this.regador.visualW, this.regador.visualH) * 0.5
     if (dist(mouseX, mouseY, this.regador.x, this.regador.y) < raioClique) {
       this.regador.arrastando = true
       return true
     }
 
-    // Se não pegou no sol nem no regador, carinho no Chouchou
+    // PRIORIDADE 3: Se não pegou no sol nem no regador, carinho no Chouchou
     if (this.chouchou.foiTocado(mouseX, mouseY)) {
       this.chouchou.tocar()
     }
   }
 
   mouseReleased() {
-    // Solta o regador e volta para a posição de repouso
     if (this.regador.arrastando) {
       this.regador.arrastando = false
       this.regador.x = this.regador.origemX
