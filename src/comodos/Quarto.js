@@ -7,6 +7,11 @@ class Quarto {
     this.nome      = 'Quarto'
     this.chouchou  = chouchou
 
+    // Garante que a lista de compras existe mesmo que o jogador nunca tenha ido à loja
+    if (this.chouchou.itensComprados === undefined) {
+      this.chouchou.itensComprados = [];
+    }
+
     // ── Configurações do Armário ──────────────────────────────────────────────
     this.armario = {
       visualW: 250,          
@@ -141,19 +146,37 @@ class Quarto {
 
   // Função auxiliar para desenhar o botão e registrar o clique
   _criarBotaoMenu(item, x, y, w, h) {
-    // Guarda na lista de cliques
-    this.opcoesMenu.push({ ...item, x, y, w, h })
+    // Lógica de verificação de compra
+    let isOpcaoVazia = (item.id === 'nenhuma' || item.id === 'nenhum');
+    let foiComprado = this.chouchou.itensComprados && this.chouchou.itensComprados.includes(item.id);
+    let podeEquipar = isOpcaoVazia || foiComprado;
 
-    // Efeito de passar o mouse por cima
+    // Guarda na lista de cliques, passando também se ele pode ser clicado
+    this.opcoesMenu.push({ ...item, x, y, w, h, podeEquipar })
+
+    // Efeito de passar o mouse por cima (apenas se puder equipar)
     let hover = mouseX > x && mouseX < x + w && mouseY > y && mouseY < y + h
-    fill(hover ? 100 : 40)
+    
+    // Altera a cor de fundo baseado no estado
+    if (podeEquipar) {
+      fill(hover ? 100 : 40)
+    } else {
+      fill(20, 20, 20, 150) // Fundo mais escuro e translúcido para itens trancados
+    }
+    
     rect(x, y, w, h, 8)
 
-    // Texto
-    fill(255)
+    // Texto com formatação baseada no bloqueio
     textAlign(CENTER, CENTER)
     textSize(14)
-    text(item.nome, x + w / 2, y + h / 2)
+    
+    if (podeEquipar) {
+      fill(255)
+      text(item.nome, x + w / 2, y + h / 2)
+    } else {
+      fill(180,50,50) // Texto cinza para mostrar indisponibilidade
+      text(`${item.nome}`, x + w / 2, y + h / 2)
+    }
   }
 
   // ── Eventos de mouse ──────────────────────────────────────────────────────
@@ -162,7 +185,6 @@ class Quarto {
       for (let btn of this.opcoesMenu) {
         if (mouseX > btn.x && mouseX < btn.x + btn.w && mouseY > btn.y && mouseY < btn.y + btn.h) {
           this._equiparItem(btn)
-          // this.menuAberto = false // (Se quiser que o menu continue aberto ao clicar, comente esta linha)
           return
         }
       }
@@ -183,7 +205,14 @@ class Quarto {
 
   // ── Lógica de equipar ─────────────────────────────────────────────────────
   _equiparItem(btn) {
-    // Verifica se é uma roupa ou um chapéu e chama a função certa no Chouchou
+    // 1. Barreira de Segurança: Impede de equipar se o item estiver bloqueado
+    if (!btn.podeEquipar) {
+      // Opcional: tocar um som de erro leve (descomente se quiser)
+      // if (typeof SONS_CHOUCHOU !== 'undefined' && SONS_CHOUCHOU.game_over) SONS_CHOUCHOU.game_over.play();
+      return; 
+    }
+
+    // 2. Se puder equipar, verifica o tipo e atualiza o sprite
     if (btn.tipo === 'roupa') {
       if (btn.id === 'nenhuma') {
         this.chouchou.setRoupa(null)
