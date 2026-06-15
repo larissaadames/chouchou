@@ -27,34 +27,32 @@ class Chouchou {
 
     // ── Estado atual ─────────────────────────────────────────────────────────
     // Controla qual animação e expressão estão ativos.
-    // Valores válidos: 'idle' | 'feliz' | 'comendo' | 'triste' | 'dormindo'
+    // Valores válidos: 'idle' | 'feliz' | 'bocaAberta' | 'comendo' | 'triste' | 'dormindo'
     this.estado = 'idle'
 
     // ── Animação de frames ───────────────────────────────────────────────────
-    this.frameAtual   = 0  // índice do frame atual dentro do array do estado
-    this.frameTimer   = 0  // contador interno
-    this.frameDuracao = 12 // quantos ticks do p5 cada frame fica visível (menor = mais rápido)
+    this.frameAtual   = 0
+    this.frameTimer   = 0
+    this.frameDuracao = 8 // 8 ticks por frame ≈ 0.13s a 60fps (bom para mastigação)
 
     // ── Sprites (preenchidos pelo ChouchouLoader) ────────────────────────────
     this.sprites = {
-      // corpo: um array de imagens por estado (frames da animação)
-      // ex: { idle: [img1, img2], feliz: [img1], ... }
       corpo: {
-        idle:     [],
-        feliz:    [],
-        comendo:  [],
-        triste:   [],
-        dormindo: [],
+        idle:       [],
+        feliz:      [],
+        bocaAberta: [], // comida está perto — boca aberta esperando
+        comendo:    [], // mastigando — alterna entre frames
+        triste:     [],
+        dormindo:   [],
       },
 
-      // expressao: uma única imagem por estado (olhos, boca, etc.)
-      // desenhada por cima do corpo, SEM tint (mantém cores originais)
       expressao: {
-        idle:     null,
-        feliz:    null,
-        comendo:  null,
-        triste:   null,
-        dormindo: null,
+        idle:       null,
+        feliz:      null,
+        bocaAberta: null,
+        comendo:    null,
+        triste:     null,
+        dormindo:   null,
       },
 
       // roupa: uma imagem opcional desenhada por cima de tudo
@@ -127,16 +125,20 @@ class Chouchou {
   // ── Update (lógica de animação) ───────────────────────────────────────────
   // Chamado a cada frame pelo cômodo ativo.
   update() {
-    const frames = this.sprites.corpo[this.estado] ?? []
-    if (frames.length === 0) return // sem sprites ainda, nada a animar
+    const framesCorpo = this.sprites.corpo[this.estado] ?? []
+    const framesExp   = this.sprites.expressao[this.estado]
+    const totalFrames = Array.isArray(framesExp)
+      ? Math.max(framesCorpo.length, framesExp.length)
+      : framesCorpo.length
+
+    if (totalFrames === 0) return
 
     this.frameTimer++
     if (this.frameTimer >= this.frameDuracao) {
       this.frameTimer = 0
-      this.frameAtual = (this.frameAtual + 1) % frames.length
+      this.frameAtual = (this.frameAtual + 1) % totalFrames
     }
   }
-
   // ── Draw (renderização em camadas) ────────────────────────────────────────
   // Ordem: corpo → expressão → roupa → chapéu
   draw() {
@@ -151,7 +153,8 @@ class Chouchou {
     const frames = this.sprites.corpo[this.estado] ?? []
     if (frames.length > 0) {
       tint(this.cor.r, this.cor.g, this.cor.b)
-      image(frames[this.frameAtual], this.x, this.y, S, S)
+      const frameIdx = this.frameAtual % frames.length
+      image(frames[frameIdx], this.x, this.y, S, S)
       noTint()
     } else {
       // Placeholder geométrico enquanto os PNGs não existem
@@ -161,7 +164,11 @@ class Chouchou {
     // ── Camada 2: expressão (sem tint — cores originais do PNG) ────────────
     const expressao = this.sprites.expressao[this.estado]
     if (expressao) {
-      image(expressao, this.x, this.y, S, S)
+      // Se for array, alterna com frameAtual — senão usa direto
+      const frame = Array.isArray(expressao)
+        ? expressao[this.frameAtual % expressao.length]
+        : expressao
+      if (frame) image(frame, this.x, this.y, S, S)
     }
 
     // ── Camada 3: roupa por cima de tudo ───────────────────────────────────
@@ -231,8 +238,9 @@ class Chouchou {
         arc(x, y + 36, 50, 36, PI, TWO_PI)
         break
 
+      case 'bocaAberta':
       case 'comendo':
-        // boca aberta
+        // boca aberta (bocaAberta = esperando, comendo = mastigando)
         noStroke()
         fill(80, 40, 20)
         ellipse(x, y + 22, 30, 24)

@@ -34,7 +34,8 @@ const CATALOGO_COMIDAS = {
     simbolo:   'N',       // símbolo químico exibido no ícone
     cor:       '#4ade80', // verde
     corEscura: '#15803d',
-    fome:      +20,       // quanto aumenta a fome ao comer
+    fome:      +20,
+    imagem:    loadImage('assets/sprites/elementos/nitrogenio_N.png'),       // quanto aumenta a fome ao comer
   },
 
   // ── Próximos elementos (comentados — descomente quando quiser adicionar) ──
@@ -124,28 +125,29 @@ class FoodSystem {
     if (this.itemAtivo?.arrastando) {
       this.itemAtivo.x = mouseX
       this.itemAtivo.y = mouseY
+
+      // Abre a boca quando a comida está perto o suficiente
+      const perto = dist(mouseX, mouseY, this.chouchou.x, this.chouchou.y) < this.RAIO_COMER
+      this.chouchou.setEstado(perto ? 'bocaAberta' : 'idle')
     }
   }
 
   // ── Draw ──────────────────────────────────────────────────────────────────
   draw() {
-    // Geladeira deve ser inicializada antes
     if (!this.geladeira.pronta) return
 
+    push() // isola todo o estado gráfico do FoodSystem
     this._desenharGeladeira()
-
-    if (this.menuAberto) {
-      this._desenharMenu()
-    }
-
-    if (this.itemAtivo) {
+    if (this.menuAberto) this._desenharMenu()
+    if (this.itemAtivo)  {
       this._desenharElemento(
         this.itemAtivo.x,
         this.itemAtivo.y,
         this.itemAtivo,
-        this.itemAtivo.arrastando ? 1.1 : 1.0 // leve zoom ao arrastar
+        this.itemAtivo.arrastando ? 1.1 : 1.0
       )
     }
+    pop() // restaura textAlign, fill, stroke, etc. para o SceneManager
   }
 
   // ── Eventos de mouse ──────────────────────────────────────────────────────
@@ -193,6 +195,11 @@ class FoodSystem {
     }
 
     this.itemAtivo.arrastando = false
+
+    // Garante que o estado volta para idle se não comeu
+    if (this.chouchou.estado === 'bocaAberta') {
+      this.chouchou.setEstado('idle')
+    }
   }
 
   // ── Privados: lógica ──────────────────────────────────────────────────────
@@ -265,7 +272,7 @@ class FoodSystem {
 
     // Indicador de que é clicável (piscada sutil)
     if (frameCount % 90 < 45) {
-      fill('#4ade80', 180)
+      fill(74, 222, 128, 180)
       ellipse(x + w - 10, y + 10, 10, 10)
     }
   }
@@ -300,7 +307,7 @@ class FoodSystem {
 
       // Fundo do item (destaque ao hover)
       const hover = dist(mouseX, mouseY, cx, cy) < 32
-      fill(hover ? def.cor : def.corEscura, hover ? 80 : 40)
+      fill(hover ? 80 : 30)
       rect(menuX + 8, cy - 20, menuW - 16, 40, 6)
 
       // Ícone do elemento (círculo com símbolo)
