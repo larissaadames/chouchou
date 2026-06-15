@@ -89,29 +89,32 @@ class Quarto {
     }
     pop()
   }
-
   _desenharBotaoPaleta() {
-    push();
-    let b = this.btnPaleta;
-    
-    // Desenha um fundo bonitinho (estilo paleta/quadro na parede)
-    fill(255, 255, 255, 200);
-    stroke('#94a3b8'); strokeWeight(3);
-    rect(b.x, b.y, b.w, b.h, 20);
-    noStroke();
-    
-    // Manchinhas de Tinta Decorativas
-    fill('#ef4444'); ellipse(b.x + 25, b.y + 30, 20, 20); // Vermelho
-    fill('#3b82f6'); ellipse(b.x + 55, b.y + 30, 20, 20); // Azul
-    fill('#facc15'); ellipse(b.x + 40, b.y + 55, 20, 20); // Amarelo
+    push()
+    const b = this.btnPaleta
 
-    // Dica Pulsante
-    if (frameCount % 60 < 30 && !this.menuCoresAberto) {
-      fill(255, 255, 255, 150); ellipse(b.x + b.w + 10, b.y + 20, 10, 10);
+    if (SPRITES_CENARIO.godet) {
+      imageMode(CORNER)
+      image(SPRITES_CENARIO.godet, b.x, b.y, b.w, b.h)
+    } else {
+      // Fallback enquanto PNG não carrega
+      fill(255, 255, 255, 200)
+      stroke('#94a3b8'); strokeWeight(3)
+      rect(b.x, b.y, b.w, b.h, 20)
+      noStroke()
+      fill('#ef4444'); ellipse(b.x + 25, b.y + 30, 20, 20)
+      fill('#3b82f6'); ellipse(b.x + 55, b.y + 30, 20, 20)
+      fill('#facc15'); ellipse(b.x + 40, b.y + 55, 20, 20)
     }
-    pop();
-  }
 
+    // Dica pulsante
+    if (frameCount % 60 < 30 && !this.menuCoresAberto) {
+      noStroke()
+      fill(255, 255, 255, 150)
+      ellipse(b.x + b.w + 10, b.y + 20, 10, 10)
+    }
+    pop()
+  }
   _desenharMenuArmario() {
     push()
     this.opcoesMenu = []
