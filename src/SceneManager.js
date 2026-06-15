@@ -146,8 +146,8 @@ class ComodoScene {
     this.comodos = [
       new Quarto(chouchou),
       new Cozinha(chouchou),
-      new Jardim(chouchou),
       new SalaJogos(chouchou),
+      new Jardim(chouchou),
       new Loja(chouchou)
     ]
 

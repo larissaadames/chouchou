@@ -188,7 +188,7 @@ class Loja {
         text("COMPRADO", x + itemW / 2, y + itemH - 12);
       } else {
         fill('#facc15');
-        text(`💰 ${item.preco}`, x + itemW / 2, y + itemH - 12);
+        text(`${item.preco}`, x + itemW / 2, y + itemH - 12);
       }
 
       // Salva a hitbox real (já deslocada) para a checagem do clique
