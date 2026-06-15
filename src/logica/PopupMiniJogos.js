@@ -14,7 +14,6 @@ class PopupMinijogos {
     this.tempoErro = 0;
 
     this.jogos = [
-      { id: 'minigame_pulo',    nome: 'Pulo Nuvem', imagem: null, x: 0, y: 0 },
       { id: 'minigame_comida', nome: 'Food Drop',  imagem: SPRITES_PREVIEWS.jogocomida, x: 0, y: 0 },
       { id: 'minigame_queda',   nome: 'Queda Livre',imagem: SPRITES_PREVIEWS.jogoqueda, x: 0, y: 0 },
       //{ id: 'minigame_memoria', nome: 'Memória',    imagem: null, x: 0, y: 0 },

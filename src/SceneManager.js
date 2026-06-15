@@ -45,11 +45,11 @@ class HomeScene {
     this.manager = manager
 
     // Botão "Jogar"
-    this.btn = { x: 0, y: 0, w: 200, h: 56 }
+    this.btn = { x: 0, y: 0, w: 300, h: 180 }
   }
 
   aoEntrar() {
-    this.btn.x = width  / 2
+    this.btn.x = width  / 4
     this.btn.y = height / 2 + 60
     console.log('[HomeScene] entrou')
   }
@@ -57,35 +57,17 @@ class HomeScene {
   update() {}
 
   draw() {
-    background('#0d0d1a')
-
-    // Estrelinhas decorativas de fundo
-    this._estrelas()
-
-    // Nome do jogo
-    textAlign(CENTER, CENTER)
-    noStroke()
-
-    fill('#c084fc') // roxo suave
-    textSize(64)
-    textStyle(BOLD)
-    text('Chouchou', width / 2, height / 2 - 100)
-    textStyle(NORMAL)
-
-    fill(255, 255, 255, 160)
-    textSize(16)
-    text('seu bichinho virtual', width / 2, height / 2 - 40)
-
-
-    fill(255, 255, 255, 160)
-    textSize(16)
-    text('Créditos: Luiz Quintiliano, Larissa Adames, Davi Cagnato, Graziele Claus', width / 2, height / 4 - 20)
-
+    // Fundo da tela inicial
+    if (SPRITES_CENARIO.telamenu) {
+      imageMode(CORNER)
+      image(SPRITES_CENARIO.telamenu, 0, 0, width, height)
+    } else {
+      background('#0d0d1a')
+    }
 
     // Botão jogar
-    this._desenharBotao(this.btn.x, this.btn.y, 'JOGAR ->')
+    this._desenharBotao(this.btn.x, this.btn.y, 'JOGAR ')
   }
-
   _estrelas() {
     // Estrelinhas fixas geradas com seed para não piscar
     randomSeed(42)
@@ -108,7 +90,7 @@ class HomeScene {
     rect(x - w/2 + 4, y - h/2 + 4, w, h, 16)
 
     // Corpo
-    fill('#7c3aed')
+    fill('#338f42')
     rect(x - w/2, y - h/2, w, h, 16)
 
     // Brilho superior
@@ -118,7 +100,7 @@ class HomeScene {
     // Texto
     fill(255)
     textAlign(CENTER, CENTER)
-    textSize(20)
+    textSize(40)
     textStyle(BOLD)
     text(label, x, y)
     textStyle(NORMAL)

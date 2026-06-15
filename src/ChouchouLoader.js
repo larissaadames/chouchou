@@ -45,6 +45,7 @@ function carregarCenarios() {
 
   SPRITES_CENARIO.food_drop       = loadImage('assets/sprites/fundos/food_drop.png')
   SPRITES_CENARIO.godet           = loadImage('assets/sprites/objetos/godet.png')
+  SPRITES_CENARIO.telamenu = loadImage('assets/sprites/fundos/telamenu.png')
 }
 
 // ── Elementos químicos ────────────────────────────────────────────────────────
