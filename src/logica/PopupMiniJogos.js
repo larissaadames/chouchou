@@ -10,11 +10,11 @@ class PopupMinijogos {
     this.arrastou = false; 
 
     this.jogos = [
-      { id: 'minigame_pulo',    nome: 'Pulo Nuvem', imagem: null, x: 0, y: 0, w: 110, h: 140 },
-      { id: 'minigame_memoria', nome: 'Memória',    imagem: null, x: 0, y: 0, w: 110, h: 140 },
-      { id: 'minigame_3',       nome: 'Corrida',    imagem: null, x: 0, y: 0, w: 110, h: 140 },
-      { id: 'minigame_4',       nome: 'Batalha',    imagem: null, x: 0, y: 0, w: 110, h: 140 },
-      { id: 'minigame_5',       nome: 'Pescaria',   imagem: null, x: 0, y: 0, w: 110, h: 140 }
+      { id: 'minigame_pulo',    nome: 'Pulo Nuvem', imagem: null, x: 0, y: 0 },
+      { id: 'minigame_memoria', nome: 'Memória',    imagem: null, x: 0, y: 0 },
+      { id: 'minigame_3',       nome: 'Corrida',    imagem: null, x: 0, y: 0 },
+      { id: 'minigame_4',       nome: 'Batalha',    imagem: null, x: 0, y: 0 },
+      { id: 'minigame_5',       nome: 'Pescaria',   imagem: null, x: 0, y: 0 }
     ];
   }
 
@@ -38,53 +38,71 @@ class PopupMinijogos {
     if (!this.aberto) return;
 
     push();
-    fill(0, 0, 0, 200);
+    // Fundo escurecido mais suave e confortável
+    fill(0, 0, 0, 180);
     rect(0, 0, width, height);
 
-    let margem = 40;
+    // Ajuste Geral de Margens externas da UI
+    let margem = 45;
     let popW = width - margem * 2;
     let popH = height - margem * 2;
     let popX = margem;
     let popY = margem;
 
-    fill('#0f172a');
+    // Fundo do Menu Principal
+    fill('#8293bd');
     stroke('#3b82f6');
     strokeWeight(4);
-    rect(popX, popY, popW, popH, 20);
+    rect(popX, popY, popW, popH, 24); // Cantos mais arredondados e orgânicos
     noStroke();
 
+    // Título Superior
     fill(255);
     textAlign(CENTER, TOP);
-    textSize(22);
+    textSize(24);
     textStyle(BOLD);
     text("MINIJOGOS", width / 2, popY + 30);
 
+    // Botão Fechar 'X'
     this.btnFechar.x = popX + popW - 55;
-    this.btnFechar.y = popY + 15;
+    this.btnFechar.y = popY + 20;
     fill('#ef4444');
-    rect(this.btnFechar.x, this.btnFechar.y, this.btnFechar.w, this.btnFechar.h, 10);
+    rect(this.btnFechar.x, this.btnFechar.y, this.btnFechar.w, this.btnFechar.h, 12);
     fill(255);
     textAlign(CENTER, CENTER);
     textSize(20);
     text("X", this.btnFechar.x + this.btnFechar.w / 2, this.btnFechar.y + this.btnFechar.h / 2);
 
-    let clipY = popY + 80;
-    let clipH = popH - 100;
+    // Área de Máscara/Corte (Clipping)
+    let clipY = popY + 85;
+    let clipH = popH - 115;
     
     drawingContext.save();
     drawingContext.beginPath();
-    drawingContext.rect(popX, clipY, popW, clipH);
+    drawingContext.rect(popX + 4, clipY, popW - 8, clipH);
     drawingContext.clip();
 
-    let espaco = 15;
-    let colunas = Math.floor(popW / (this.jogos[0].w + espaco));
-    if (colunas < 1) colunas = 1; 
-    let margemEsquerdaGrid = popX + (popW - (colunas * this.jogos[0].w + (colunas - 1) * espaco)) / 2;
+    // --- GRID CONFIGURATION (Aumentado o Espaçamento/Gap) ---
+    let espaco = 24; // Aumentado para dar mais respiro entre os cards
+    let colunas = 2; 
     
+    // Calcula largura exata considerando os gaps laterais e centrais confortavelmente
+    let larguraCard = (popW - (espaco * 3)) / 2;
+    
+    // MATEMÁTICA DA PARCELA VISÍVEL:
+    // Fazemos a altura do card baseada no tamanho vertical da tela disponível, garantindo
+    // que 2 linhas caibam inteiras e um pedaço da 3ª apareça no fundo da caixa de corte.
+    let alturaCard = (clipH - (espaco * 2.4)) / 2; 
+
+    let margemEsquerdaGrid = popX + espaco; 
     let maxLinhas = 0;
 
     for (let i = 0; i < this.jogos.length; i++) {
       let jogo = this.jogos[i];
+      
+      jogo.w = larguraCard;
+      jogo.h = alturaCard;
+
       let col = i % colunas;
       let row = Math.floor(i / colunas);
       maxLinhas = Math.max(maxLinhas, row + 1);
@@ -92,46 +110,59 @@ class PopupMinijogos {
       jogo.x = margemEsquerdaGrid + col * (jogo.w + espaco);
       jogo.y = clipY + 15 + row * (jogo.h + espaco) + this.scrollOffset;
 
-      fill(this.jogoPressionado === jogo ? '#475569' : '#334155');
-      rect(jogo.x, jogo.y, jogo.w, jogo.h, 15);
+      // Fundo do Card com feedback visual sutil
+      fill(this.jogoPressionado === jogo ? '#43597c' : '#4a6083');
+      stroke(this.jogoPressionado === jogo ? '#e6e6e6' : '#070707');
+      strokeWeight(2);
+      rect(jogo.x, jogo.y, jogo.w, jogo.h, 18);
+      noStroke();
 
-      let margemImg = 10;
-      let imgH = jogo.h - 45; 
-      fill('#1e293b');
-      rect(jogo.x + margemImg, jogo.y + margemImg, jogo.w - margemImg*2, imgH, 8);
+      // Mini-container interno para guardar a Imagem de demonstração
+      let margemImg = 12;
+      let textHeight = 45; // Espaço do rodapé
+      let imgH = jogo.h - textHeight - margemImg * 2; 
+      
+      fill('#0f172a');
+      rect(jogo.x + margemImg, jogo.y + margemImg, jogo.w - margemImg * 2, imgH, 12);
       
       if (jogo.imagem) {
         imageMode(CORNER);
-        image(jogo.imagem, jogo.x + margemImg, jogo.y + margemImg, jogo.w - margemImg*2, imgH);
+        image(jogo.imagem, jogo.x + margemImg, jogo.y + margemImg, jogo.w - margemImg * 2, imgH);
       } else {
-        fill(255, 100);
+        fill(255, 60);
         textAlign(CENTER, CENTER);
-        textSize(12);
+        textSize(13);
         textStyle(NORMAL);
-        text("Imagem", jogo.x + jogo.w / 2, jogo.y + margemImg + imgH / 2);
+        text("Preview", jogo.x + jogo.w / 2, jogo.y + margemImg + imgH / 2);
       }
+
+      // Rodapé de Texto do Card (Com uma leve caixinha de fundo para organização)
+      fill('#27272a');
+      rect(jogo.x + margemImg, jogo.y + jogo.h - 40, jogo.w - margemImg * 2, 28, 8);
 
       fill(255);
       textAlign(CENTER, CENTER);
       textSize(14);
       textStyle(BOLD);
-      text(jogo.nome, jogo.x + jogo.w / 2, jogo.y + jogo.h - 22);
+      text(jogo.nome, jogo.x + jogo.w / 2, jogo.y + jogo.h - 26);
     }
 
-    drawingContext.restore(); 
+    drawingContext.restore(); // Desativa janela de clipping
 
-    let alturaTotalGrid = maxLinhas * (this.jogos[0].h + espaco) + 40;
+    // --- LIMITADOR DE SCROLL ---
+    let alturaTotalGrid = maxLinhas * (alturaCard + espaco) + 40;
     let minScroll = clipH - alturaTotalGrid;
     
     if (minScroll > 0) minScroll = 0; 
     if (this.scrollOffset < minScroll) this.scrollOffset = minScroll; 
 
+    // Scrollbar lateral elegante e polida
     if (minScroll < 0) {
       let proporcaoTela = clipH / alturaTotalGrid;
       let tamanhoBarra = clipH * proporcaoTela;
-      let posicaoBarra = map(this.scrollOffset, 0, minScroll, clipY, clipY + clipH - tamanhoBarra);
-      fill(255, 255, 255, 50);
-      rect(popX + popW - 12, posicaoBarra, 6, tamanhoBarra, 4);
+      let posicaoBarra = map(this.scrollOffset, 0, minScroll, clipY + 5, clipY + clipH - tamanhoBarra - 5);
+      fill(255, 255, 255, 40);
+      rect(popX + popW - 12, posicaoBarra, 5, tamanhoBarra, 10);
     }
     pop();
   }
@@ -143,8 +174,8 @@ class PopupMinijogos {
       return;
     }
 
-    let clipY = 40 + 80;
-    let clipH = (height - 80) - 100;
+    let clipY = 45 + 85;
+    let clipH = (height - 90) - 115;
     
     if (mouseY > clipY && mouseY < clipY + clipH) {
       for (let jogo of this.jogos) {
@@ -165,7 +196,6 @@ class PopupMinijogos {
     
     if (this.jogoPressionado && !this.arrastou) {
       console.log("Abrir minijogo:", this.jogoPressionado.id);
-      // Aqui você vai chamar a mudança de cena no futuro
     }
     this.jogoPressionado = null;
   }
