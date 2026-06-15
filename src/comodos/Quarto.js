@@ -26,14 +26,14 @@ class Quarto {
       { id: 'camisa10', nome: 'Camisa 10',   tipo: 'roupa' },
       { id: 'saia',     nome: 'Saia',        tipo: 'roupa' },
       { id: 'terno',    nome: 'Terno',       tipo: 'roupa' },
-      { id: 'nenhuma',  nome: 'Tirar Roupa', tipo: 'roupa' }
+      { id: 'nenhuma',  nome: 'Nenhuma Roupa', tipo: 'roupa' }
     ]
 
     this.listaChapeus = [
       { id: 'caule',    nome: 'Caule',        tipo: 'chapeu' },
       { id: 'lacinho',  nome: 'Lacinho',      tipo: 'chapeu' },
       { id: 'panela',   nome: 'Panela',       tipo: 'chapeu' },
-      { id: 'nenhum',   nome: 'Tirar Chapéu', tipo: 'chapeu' }
+      { id: 'nenhum',   nome: 'Nenhum Chapéu', tipo: 'chapeu' }
     ]
   }
 

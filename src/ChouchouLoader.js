@@ -40,6 +40,7 @@ function carregarCenarios() {
   SPRITES_CENARIO.laboratorio    = loadImage('assets/sprites/fundos/laboratorio.png')
   SPRITES_CENARIO.quarto         = loadImage('assets/sprites/fundos/quarto.png')
   SPRITES_CENARIO.jardim         = loadImage('assets/sprites/fundos/jardim.png')
+  SPRITES_CENARIO.salajogos      = loadImage('assets/sprites/fundos/salajogos.png')
 }
 
 // ── Elementos químicos ────────────────────────────────────────────────────────
@@ -56,8 +57,11 @@ function carregarElementos() {
   CATALOGO_COMIDAS.calcio.imagem     = loadImage('assets/sprites/elementos/calcio_Ca.png')
   CATALOGO_COMIDAS.magnesio.imagem   = loadImage('assets/sprites/elementos/magnesio_Mg.png')
   CATALOGO_COMIDAS.enxofre.imagem    = loadImage('assets/sprites/elementos/enxofre_S.png')
+
   SPRITES_OBJETOS.regador            = loadImage('assets/sprites/objetos/regador.png')
   SPRITES_OBJETOS.armario            = loadImage('assets/sprites/objetos/armario.png')
+  SPRITES_OBJETOS.disparervilha = loadImage('assets/sprites/objetos/disparervilha.png')
+
   SPRITES_ROUPAS.camisa10 = loadImage('assets/sprites/roupas/camisa10.png')
   SPRITES_ROUPAS.saia     = loadImage('assets/sprites/roupas/saia.png')
   SPRITES_ROUPAS.terno    = loadImage('assets/sprites/roupas/terno.png')
