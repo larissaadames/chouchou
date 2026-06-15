@@ -13,6 +13,7 @@ class SceneManager {
     this.registrar('comodos', new ComodoScene(this, chouchou))
 
     this.registrar('minigame_pulo', new JogoPulo(this, chouchou))
+    this.registrar('minigame_comida', new JogoComida(this, chouchou));
 
     // Cena inicial
     this.irPara('home')

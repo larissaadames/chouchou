@@ -11,10 +11,11 @@ class PopupMinijogos {
 
     this.jogos = [
       { id: 'minigame_pulo',    nome: 'Pulo Nuvem', imagem: null, x: 0, y: 0 },
-      { id: 'minigame_memoria', nome: 'Memória',    imagem: null, x: 0, y: 0 },
-      { id: 'minigame_3',       nome: 'Corrida',    imagem: null, x: 0, y: 0 },
-      { id: 'minigame_4',       nome: 'Batalha',    imagem: null, x: 0, y: 0 },
-      { id: 'minigame_5',       nome: 'Pescaria',   imagem: null, x: 0, y: 0 }
+      { id: 'minigame_comida', nome: 'Food Drop',  imagem: null, x: 0, y: 0 },
+      //{ id: 'minigame_memoria', nome: 'Memória',    imagem: null, x: 0, y: 0 },
+      //{ id: 'minigame_3',       nome: 'Corrida',    imagem: null, x: 0, y: 0 },
+      //{ id: 'minigame_4',       nome: 'Batalha',    imagem: null, x: 0, y: 0 },
+      //{ id: 'minigame_5',       nome: 'Pescaria',   imagem: null, x: 0, y: 0 }
     ];
   }
 

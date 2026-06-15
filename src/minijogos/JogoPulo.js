@@ -1,11 +1,10 @@
 // O ficheiro JogoPulo.js
 class JogoPulo extends MinijogoBase {
   constructor(manager, chouchou) {
-    // O super() avisa a classe base para se preparar
     super(manager, chouchou); 
+    this.fpsEstavel = 60; // Guarda o FPS médio
   }
 
-  // É chamado sempre que o jogo recomeça
   iniciar() {
     this.jogadorY = height - 100;
     this.velocidadeY = 0;
@@ -13,37 +12,35 @@ class JogoPulo extends MinijogoBase {
     this.obstaculoX = width;
   }
 
-  // A física e lógica (substitui o update do jogo)
   atualizar() {
-    // Física do salto
-    this.velocidadeY += this.gravidade;
-    this.jogadorY += this.velocidadeY;
+    let dt = min(deltaTime, 32); 
+    let estabilizador = dt / 16.66; 
 
-    // Bater no chão
+    this.velocidadeY += this.gravidade * estabilizador;
+    this.jogadorY += this.velocidadeY * estabilizador;
+
     if (this.jogadorY > height - 100) {
       this.jogadorY = height - 100;
       this.velocidadeY = 0;
     }
 
-    // Mover obstáculo
-    this.obstaculoX -= 5;
+    this.obstaculoX -= 6 * estabilizador; 
     
-    // Ganha pontos ao passar o obstáculo
-    if (this.obstaculoX < 0) {
+    if (this.obstaculoX < -40) { 
       this.obstaculoX = width;
-      this.pontuacao += 10; // A variável pontuacao já existe na Classe Base!
+      this.pontuacao += 10; 
     }
 
-    // Colisão simples = Game Over
     let distancia = dist(100, this.jogadorY, this.obstaculoX, height - 100);
     if (distancia < 40) {
-      this.darGameOver(); // Basta chamar isto para perder e parar tudo!
+      this.darGameOver(); 
     }
   }
 
-  // Desenhar os elementos no ecrã
   desenhar() {
-    background('#87CEEB'); // Céu azul
+    background('#87CEEB'); 
+
+    noStroke(); // <--- DESLIGA OS CONTORNOS (Alivia drasticamente a renderização)
 
     // Chão
     fill('#22c55e');
@@ -53,14 +50,29 @@ class JogoPulo extends MinijogoBase {
     fill('#ef4444');
     rect(this.obstaculoX, height - 120, 40, 40);
 
-    // Jogador (Podes usar o SPRITE do Chouchou aqui depois!)
+    // Jogador 
     fill(this.chouchou.cor.r, this.chouchou.cor.g, this.chouchou.cor.b);
     ellipse(100, this.jogadorY, 50, 50);
+
+    // ─── MONITOR DE FPS OTIMIZADO ───
+    if (frameCount % 30 === 0) {
+      this.fpsEstavel = frameRate();
+    }
+
+    push();
+    textFont('sans-serif'); // Força o FPS a usar fonte padrão para não travar
+    if (this.fpsEstavel > 45) {
+      fill(0, 255, 0); // Verde
+    } else {
+      fill(255, 0, 0); // Vermelho
+    }
+    textSize(24);
+    textAlign(LEFT, TOP);
+    text("FPS: " + this.fpsEstavel.toFixed(0), 40, 80);
+    pop();
   }
 
-  // Interação exclusiva do minijogo
   clicar() {
-    // Se o jogador estiver no chão, salta
     if (this.jogadorY >= height - 100) {
       this.velocidadeY = -15; 
     }
