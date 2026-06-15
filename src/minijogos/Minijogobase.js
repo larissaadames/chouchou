@@ -15,6 +15,17 @@ class MinijogoBase {
     this.recompensas = null; 
   }
 
+  // ── CICLO DE VIDA (Chamado automaticamente pelo SceneManager) ──
+  aoEntrar() {
+    this.estado = 'INICIO';
+    this.pontuacao = 0;
+    this.recompensas = null;
+  }
+
+  // Ganchos customizáveis para os efeitos sonoros das subclasses
+  aoPausar() {}
+  aoRetomar() {}
+
   update() {
     if (this.estado === 'A_JOGAR') {
       this.atualizar(); 
@@ -61,6 +72,7 @@ class MinijogoBase {
     else if (this.estado === 'A_JOGAR') {
       if (clicouNoBotao(this.btnTopoEsq)) {
         this.estado = 'PAUSADO'; 
+        this.aoPausar(); // <--- CORREÇÃO: Avisa o minijogo para pausar a música
         return;
       }
       this.clicar(); 
@@ -68,6 +80,7 @@ class MinijogoBase {
     else if (this.estado === 'PAUSADO') {
       if (clicouNoBotao(this.btnContinuar)) {
         this.estado = 'A_JOGAR'; 
+        this.aoRetomar(); // <--- CORREÇÃO: Avisa o minijogo para continuar a música
         return;
       }
       if (clicouNoBotao(this.btnSairPausa)) {
@@ -156,7 +169,7 @@ class MinijogoBase {
     textAlign(RIGHT, TOP);
     textSize(24);
     textStyle(NORMAL);
-    text("Pontos: " + this.pontuacao, width - 20, 20);
+    text("Pontuação: " + this.pontuacao, width - 20, 20);
     this._desenharBtnTopo(isGameOver); 
   }
 
@@ -168,15 +181,13 @@ class MinijogoBase {
     textAlign(CENTER, CENTER);
     textSize(40);
     textStyle(BOLD);
-    text("GAME OVER", width / 2, 80); // Subi o título
+    text("GAME OVER", width / 2, 80); 
     
     textSize(20);
     textStyle(NORMAL);
     text("Pontuação: " + this.pontuacao, width / 2, 120);
 
-    // -- CAIXA DE RECOMPENSAS DINÂMICA --
     if (this.recompensas) {
-      // Calcula a altura da caixa baseada na quantidade de itens que você ganhou
       let qtdItens = this.recompensas.itens.length;
       let alturaCaixa = 160 + (qtdItens > 0 ? qtdItens * 28 : 28); 
       
@@ -196,9 +207,8 @@ class MinijogoBase {
       textSize(16);
       
       fill('#facc15');
-      text(`${this.recompensas.moedas} Moedas`, width / 2, topoCaixa + 55);
+      text(`+${this.recompensas.moedas} Moedas`, width / 2, topoCaixa + 55);
 
-      // Linhas dos itens (se houver muitos, a caixa já foi calculada para caber todos)
       let yItem = topoCaixa + 85;
       if (this.recompensas.itens.length > 0) {
         for (let item of this.recompensas.itens) {
@@ -214,14 +224,12 @@ class MinijogoBase {
 
       fill(255, 180);
       textSize(13);
-      // Rodapé ancorado no fundo dinâmico da caixa
       text(`Humor +${this.recompensas.humor}  |  Energia ${this.recompensas.energia}  |  Hidratação ${this.recompensas.hidratacao}  |  Fome ${this.recompensas.fome}`, width / 2, topoCaixa + alturaCaixa - 25);
     }
 
     fill(255);
     textSize(16);
     textStyle(NORMAL);
-    // Move o botão de reiniciar lá pro final da tela para não encostar na caixa gigante
     text("Clica na tela para tentar de novo", width / 2, height - 60);
     
     this._desenharBtnTopo(true); 

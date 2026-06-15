@@ -1,11 +1,11 @@
 // ── Catálogo global de comidas ────────────────────────────────────────────────
 const CATALOGO_COMIDAS = {
-  nitrogenio: { id: 'nitrogenio', nome: 'Nitrogênio', simbolo: 'N', cor: '#4ade80', fome: +20, imagem: null },
-  fosforo:    { id: 'fosforo',    nome: 'Fósforo',    simbolo: 'P', cor: '#fb923c', fome: +15, imagem: null },
-  potassio:   { id: 'potassio',   nome: 'Potássio',   simbolo: 'K', cor: '#a78bfa', fome: +18, imagem: null },
-  calcio:     { id: 'calcio',     nome: 'Cálcio',     simbolo: 'Ca',cor: '#f9a8d4', fome: +12, imagem: null },
-  magnesio:   { id: 'magnesio',   nome: 'Magnésio',   simbolo: 'Mg',cor: '#67e8f9', fome: +10, imagem: null },
-  enxofre:    { id: 'enxofre',    nome: 'Enxofre',    simbolo: 'S', cor: '#fde047', fome: +8,  imagem: null }
+  nitrogenio: { id: 'nitrogenio', nome: 'Nitrogênio', simbolo: 'N', cor: '#58b4d0', fome: +20, imagem: null },
+  fosforo:    { id: 'fosforo',    nome: 'Fósforo',    simbolo: 'P', cor: '#c73d3d', fome: +15, imagem: null },
+  potassio:   { id: 'potassio',   nome: 'Potássio',   simbolo: 'K', cor: '#a4a4a4', fome: +18, imagem: null },
+  calcio:     { id: 'calcio',     nome: 'Cálcio',     simbolo: 'Ca',cor: '#b990d3', fome: +12, imagem: null },
+  magnesio:   { id: 'magnesio',   nome: 'Magnésio',   simbolo: 'Mg',cor: '#455077', fome: +10, imagem: null },
+  enxofre:    { id: 'enxofre',    nome: 'Enxofre',    simbolo: 'S', cor: '#d49f54', fome: +8,  imagem: null }
 }
 
 // ── FoodSystem ───────────────────────────────────────────────────────────────
