@@ -60,16 +60,16 @@ class JogoPulo extends MinijogoBase {
     }
 
     push();
-    textFont('sans-serif'); // Força o FPS a usar fonte padrão para não travar
-    if (this.fpsEstavel > 45) {
-      fill(0, 255, 0); // Verde
-    } else {
-      fill(255, 0, 0); // Vermelho
-    }
-    textSize(24);
-    textAlign(LEFT, TOP);
-    text("FPS: " + this.fpsEstavel.toFixed(0), 40, 80);
-    pop();
+    // textFont('sans-serif'); // Força o FPS a usar fonte padrão para não travar
+    // if (this.fpsEstavel > 45) {
+    //  fill(0, 255, 0); // Verde
+    // } else {
+    //   fill(255, 0, 0); // Vermelho
+    // }
+    // textSize(24);
+    // textAlign(LEFT, TOP);
+    // text("FPS: " + this.fpsEstavel.toFixed(0), 40, 80);
+    // pop();
   }
 
   clicar() {

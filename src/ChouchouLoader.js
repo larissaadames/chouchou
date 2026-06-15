@@ -93,4 +93,5 @@ function carregarSons() {
 
   SONS_CHOUCHOU.musica_fooddrop = loadSound('assets/sounds/songs/fooddrop.mp3');
   SONS_CHOUCHOU.game_over = loadSound('assets/sounds/effects/game-over.mp3');
+  SONS_CHOUCHOU.sun_pickup = loadSound('assets/sounds/effects/sun-pickup.mp3');
 }

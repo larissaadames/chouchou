@@ -39,6 +39,11 @@ class Jardim {
 
     // Cooldown para não aumentar a hidratação a cada frame
     this._cooldown = 0
+    
+    // ── SISTEMA DE SÓIS (Energia) ──────────────────────────────────────────────
+    this.sois = [];
+    this.tempoUltimoSol = 0;
+    this.intervaloSol = random(8000, 15000); // Aparece entre 8 e 15 segundos
   }
 
   update() {
@@ -47,6 +52,28 @@ class Jardim {
       this.regador.y = height * 0.35
       this.regador.origemY = height * 0.35
       this._inicializado = true
+    }
+
+    // ── Atualização do Sol (Energia) ──
+    let dt = min(deltaTime, 32);
+    let estabilizador = dt / 16.66;
+
+    this.tempoUltimoSol += dt;
+    if (this.tempoUltimoSol >= this.intervaloSol) {
+      this.gerarSol();
+      this.tempoUltimoSol = 0;
+      this.intervaloSol = random(4000, 10000); 
+    }
+
+    for (let i = this.sois.length - 1; i >= 0; i--) {
+      let sol = this.sois[i];
+      sol.y += sol.velocidade * estabilizador;
+      sol.angulo += sol.velAngulo * estabilizador;
+      
+      // Apaga o sol se ele sair da tela
+      if (sol.y > height + 80) {
+        this.sois.splice(i, 1);
+      }
     }
 
     // Segue o mouse enquanto arrasta
@@ -60,7 +87,7 @@ class Jardim {
 
       if (dentroAlcance) {
         // Spawna 2 gotas por frame
-        for (let i = 0; i < 2; i++) {
+        for (let i = 0; i < 3; i++) {
           this.gotas.push({
             x:     bico.x + random(-5, 5), // Menor dispersão
             y:     bico.y,
@@ -89,6 +116,17 @@ class Jardim {
     this.gotas = this.gotas.filter(g => g.alpha > 0)
   }
 
+  gerarSol() {
+    this.sois.push({
+      x: random(80, width - 80),
+      y: -60, 
+      velocidade: random(1.5, 2.5), 
+      tamanho: 60,
+      angulo: random(TWO_PI),
+      velAngulo: random(0.01, 0.03) 
+    });
+  }
+
   draw() {
     // ── Camada 1: Fundo do Jardim ───────────────────────────────────────────
     if (SPRITES_CENARIO.jardim) {
@@ -101,14 +139,33 @@ class Jardim {
     // ── Camada 2: Chouchou ──────────────────────────────────────────────────
     this.chouchou.draw()
 
-    // ── Camada 3: Gotas de água ─────────────────────────────────────────────
+    // ── Camada 3: Sóis (Energia) ────────────────────────────────────────────
+    for (let sol of this.sois) {
+      push();
+      translate(sol.x, sol.y);
+      rotate(sol.angulo);
+      noStroke();
+
+      // Placeholder do Sol: um círculo amarelo com raios
+      fill('#fef08a'); 
+      for (let r = 0; r < 8; r++) {
+        rotate(TWO_PI / 8);
+        ellipse(0, 35, 12, 24);
+      }
+      fill('#facc15'); 
+      ellipse(0, 0, sol.tamanho, sol.tamanho);
+      
+      pop();
+    }
+
+    // ── Camada 4: Gotas de água ─────────────────────────────────────────────
     noStroke()
     for (const g of this.gotas) {
       fill(96, 165, 250, g.alpha) // azul claro
       ellipse(g.x, g.y, 12, 18)
     }
 
-    // ── Camada 4: Regador (IMAGEM) ─────────────────────────────────────────
+    // ── Camada 5: Regador (IMAGEM) ─────────────────────────────────────────
     this._desenharRegador(this.regador.x, this.regador.y)
 
     // ── Dica inicial ──────────────────────────────────────────────────────
@@ -158,15 +215,29 @@ class Jardim {
 
   // ── Eventos de mouse ──────────────────────────────────────────────────────
   mousePressed() {
-    // PRIORIDADE 1: Verifica se clicou próximo ao corpo do regador para arrastar
+    // Verifica se o jogador clicou num dos Sóis caindo
+    for (let i = this.sois.length - 1; i >= 0; i--) {
+      let sol = this.sois[i];
+      if (dist(mouseX, mouseY, sol.x, sol.y) < sol.tamanho) {
+        // Coletou o sol! Aumenta a energia
+        this.chouchou._alterarStat('energia', random(5, 10));
+        this.chouchou.setEstado('feliz')
+        setTimeout(() => this.chouchou.setEstado('idle'), 800)
+        
+        this.sois.splice(i, 1);
+        return true; 
+      }
+    }
+
+    // Verifica se clicou próximo ao corpo do regador para arrastar
     // Usamos a maior dimensão visual para definir o raio de clique
     let raioClique = max(this.regador.visualW, this.regador.visualH) * 0.5
     if (dist(mouseX, mouseY, this.regador.x, this.regador.y) < raioClique) {
       this.regador.arrastando = true
-      return
+      return true
     }
 
-    // PRIORIDADE 2: Se não pegou o regador, carinho no Chouchou
+    // Se não pegou no sol nem no regador, carinho no Chouchou
     if (this.chouchou.foiTocado(mouseX, mouseY)) {
       this.chouchou.tocar()
     }
@@ -174,9 +245,11 @@ class Jardim {
 
   mouseReleased() {
     // Solta o regador e volta para a posição de repouso
-    this.regador.arrastando = false
-    this.regador.x = this.regador.origemX
-    this.regador.y = this.regador.origemY
-    this._cooldown = 0
+    if (this.regador.arrastando) {
+      this.regador.arrastando = false
+      this.regador.x = this.regador.origemX
+      this.regador.y = this.regador.origemY
+      this._cooldown = 0
+    }
   }
 }

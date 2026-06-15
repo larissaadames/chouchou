@@ -215,7 +215,7 @@ class MinijogoBase {
       fill(255, 180);
       textSize(13);
       // Rodapé ancorado no fundo dinâmico da caixa
-      text(`Efeito no Pet: Humor +${this.recompensas.humor}  |  Energia ${this.recompensas.energia}  |  Fome ${this.recompensas.fome}`, width / 2, topoCaixa + alturaCaixa - 25);
+      text(`Humor +${this.recompensas.humor}  |  Energia ${this.recompensas.energia}  |  Hidratação ${this.recompensas.hidratacao}  |  Fome ${this.recompensas.fome}`, width / 2, topoCaixa + alturaCaixa - 25);
     }
 
     fill(255);
