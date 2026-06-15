@@ -24,7 +24,7 @@ class Chouchou {
       hidratacao: { valor: 50, max: 100, cor: '#3b82f6', icone: '💧' }, // azul
       energia: { valor: 90, max: 100, cor: '#facc15', icone: '⚡' }, // amarelo
     }
-
+/-/
     // ── Estado atual ─────────────────────────────────────────────────────────
     // Controla qual animação e expressão estão ativos.
     // Valores válidos: 'idle' | 'feliz' | 'comendo' | 'triste' | 'dormindo'
