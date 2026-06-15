@@ -12,7 +12,7 @@ class MinijogoBase {
     this.btnContinuar = { x: meioX - 100, y: meioY - 30, w: 200, h: 50 };
     this.btnSairPausa = { x: meioX - 100, y: meioY + 40, w: 200, h: 50 };
 
-    this.recompensas = null; // Guardará o que o jogador ganhou na partida
+    this.recompensas = null; 
   }
 
   update() {
@@ -84,42 +84,57 @@ class MinijogoBase {
     }
   }
 
-  // ── SISTEMA DE RECOMPENSAS ──────────────────────────────────────────────────
   darGameOver() {
     this.estado = 'GAMEOVER';
-    this.chouchou._alterarStat('humor', 20); 
 
-    // 1. Garante que o Chouchou tem uma carteira e inventário global
+    let multiplicador = Math.floor(this.pontuacao / 20);
+
+    let ganhoHumor = 10 + multiplicador;
+    let perdaFome = -(5 + multiplicador);
+    let perdaHidratacao = -(5 + Math.floor(multiplicador * 1.5));
+    let perdaEnergia = -(10 + (multiplicador * 2));
+
+    this.chouchou._alterarStat('humor', ganhoHumor);
+    this.chouchou._alterarStat('fome', perdaFome);
+    this.chouchou._alterarStat('hidratação', perdaHidratacao);
+    this.chouchou._alterarStat('energia', perdaEnergia);
+
     if (this.chouchou.moedas === undefined) this.chouchou.moedas = 0;
-    if (this.chouchou.inventario === undefined) {
-      // Inventário inicial (quantidade de cada elemento)
-      this.chouchou.inventario = { nitrogenio: 3, fosforo: 3, potassio: 3, calcio: 3, magnesio: 3, enxofre: 3 };
-    }
-
-    // 2. Calcula as recompensas
     let moedasGanhas = Math.floor(this.pontuacao / 5); 
     this.chouchou.moedas += moedasGanhas;
 
+    if (this.chouchou.inventario === undefined) {
+      this.chouchou.inventario = { nitrogenio: 3, fosforo: 3, potassio: 3, calcio: 3, magnesio: 3, enxofre: 3 };
+    }
+
     let itensGanhos = [];
-    
-    // Só ganha itens se tiver feito mais de 20 pontos, para incentivar a jogar bem!
-    if (this.pontuacao >= 20) {
-      let qtdTiposSorteados = Math.floor(random(1, 4)); // Ganha de 1 a 3 TIPOS de itens diferentes
+    let qtdElementosGanhos = Math.floor(this.pontuacao / 100);
+
+    if (qtdElementosGanhos > 0) {
       let chavesCatalogo = Object.keys(CATALOGO_COMIDAS);
 
-      for (let i = 0; i < qtdTiposSorteados; i++) {
+      for (let i = 0; i < qtdElementosGanhos; i++) {
         let idSorteado = random(chavesCatalogo);
-        let qtdSorteada = Math.floor(random(1, 4)); // Ganha de 1 a 3 UNIDADES de cada tipo
         
-        // Adiciona ao inventário global do bicho
-        this.chouchou.inventario[idSorteado] += qtdSorteada;
+        this.chouchou.inventario[idSorteado] += 1;
         
-        // Guarda para mostrar na tela
-        itensGanhos.push({ def: CATALOGO_COMIDAS[idSorteado], qtd: qtdSorteada });
+        let itemExistente = itensGanhos.find(item => item.def.id === idSorteado);
+        if (itemExistente) {
+          itemExistente.qtd += 1;
+        } else {
+          itensGanhos.push({ def: CATALOGO_COMIDAS[idSorteado], qtd: 1 });
+        }
       }
     }
 
-    this.recompensas = { moedas: moedasGanhas, itens: itensGanhos };
+    this.recompensas = { 
+      moedas: moedasGanhas, 
+      itens: itensGanhos,
+      humor: ganhoHumor,
+      fome: perdaFome,
+      hidratacao: perdaHidratacao,
+      energia: perdaEnergia
+    };
   }
 
   sairDoJogo() {
@@ -145,7 +160,6 @@ class MinijogoBase {
     this._desenharBtnTopo(isGameOver); 
   }
 
-  // ── TELA DE GAME OVER E RECIBO DE RECOMPENSAS ──────────────────────────────
   _desenharGameOver() {
     fill(0, 0, 0, 180); 
     rect(0, 0, width, height);
@@ -154,49 +168,61 @@ class MinijogoBase {
     textAlign(CENTER, CENTER);
     textSize(40);
     textStyle(BOLD);
-    text("GAME OVER", width / 2, height / 2 - 140);
+    text("GAME OVER", width / 2, 80); // Subi o título
     
     textSize(20);
     textStyle(NORMAL);
-    text("Pontuação: " + this.pontuacao, width / 2, height / 2 - 100);
+    text("Pontuação: " + this.pontuacao, width / 2, 120);
 
-    // -- CAIXA DE RECOMPENSAS --
+    // -- CAIXA DE RECOMPENSAS DINÂMICA --
     if (this.recompensas) {
+      // Calcula a altura da caixa baseada na quantidade de itens que você ganhou
+      let qtdItens = this.recompensas.itens.length;
+      let alturaCaixa = 160 + (qtdItens > 0 ? qtdItens * 28 : 28); 
+      
       fill(255, 255, 255, 20);
       rectMode(CENTER);
-      rect(width / 2, height / 2 + 20, 320, 180, 16);
+      rect(width / 2, height / 2 + 10, 480, alturaCaixa, 16);
       rectMode(CORNER);
+
+      let topoCaixa = (height / 2 + 10) - (alturaCaixa / 2);
 
       fill(255);
       textSize(18);
       textStyle(BOLD);
-      text("RECOMPENSAS:", width / 2, height / 2 - 40);
+      text("RECOMPENSAS:", width / 2, topoCaixa + 25);
 
       textStyle(NORMAL);
       textSize(16);
       
-      // Moedas
       fill('#facc15');
-      text(`💰 +${this.recompensas.moedas} Moedas`, width / 2, height / 2 - 5);
+      text(`${this.recompensas.moedas} Moedas`, width / 2, topoCaixa + 55);
 
-      // Itens Sorteados
-      let yItem = height / 2 + 25;
+      // Linhas dos itens (se houver muitos, a caixa já foi calculada para caber todos)
+      let yItem = topoCaixa + 85;
       if (this.recompensas.itens.length > 0) {
         for (let item of this.recompensas.itens) {
           fill(item.def.cor);
           text(`+ ${item.qtd} ${item.def.nome} (${item.def.simbolo})`, width / 2, yItem);
-          yItem += 25;
+          yItem += 28;
         }
       } else {
         fill(150);
-        text("(Faz mais pontos para ganhar comidas!)", width / 2, yItem + 10);
+        text("(Faz 100 pontos para ganhar uma comida!)", width / 2, yItem);
+        yItem += 28;
       }
+
+      fill(255, 180);
+      textSize(13);
+      // Rodapé ancorado no fundo dinâmico da caixa
+      text(`Efeito no Pet: Humor +${this.recompensas.humor}  |  Energia ${this.recompensas.energia}  |  Fome ${this.recompensas.fome}`, width / 2, topoCaixa + alturaCaixa - 25);
     }
 
     fill(255);
     textSize(16);
     textStyle(NORMAL);
-    text("Clica na tela para tentar de novo", width / 2, height / 2 + 140);
+    // Move o botão de reiniciar lá pro final da tela para não encostar na caixa gigante
+    text("Clica na tela para tentar de novo", width / 2, height - 60);
     
     this._desenharBtnTopo(true); 
   }
