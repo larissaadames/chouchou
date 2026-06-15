@@ -15,7 +15,7 @@ class FoodSystem {
     
     // Configura o inventário inicial global
     if (this.chouchou.inventario === undefined) {
-      this.chouchou.inventario = { nitrogenio: 3, fosforo: 3, potassio: 3, calcio: 3, magnesio: 3, enxofre: 3 };
+      this.chouchou.inventario = { nitrogenio: 1, fosforo: 1, potassio: 1, calcio: 1, magnesio: 1, enxofre: 1 };
     }
     
     this.itemAtivo = null;   

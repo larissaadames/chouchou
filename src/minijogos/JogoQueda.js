@@ -52,15 +52,11 @@ class JogoQueda extends MinijogoBase {
       let nuvem = this.nuvens[i];
       nuvem.y -= nuvem.velocidade * estabilizador;
 
-      // Cálculo da Hitbox: 
-      // Topo: [nuvem.y - altura/2] até [nuvem.y] (apenas metade superior da nuvem)
-      // Largura: toda a largura da nuvem
       let hitboxTop = nuvem.y - nuvem.altura / 2;
-      let hitboxBottom = nuvem.y; // Corta a nuvem na metade
+      let hitboxBottom = nuvem.y; 
       let hitboxLeft = nuvem.x - nuvem.largura / 2;
       let hitboxRight = nuvem.x + nuvem.largura / 2;
 
-      // Verificação se o centro do Chouchou está dentro desse retângulo reduzido
       if (this.jogadorX > hitboxLeft && 
           this.jogadorX < hitboxRight && 
           this.jogadorY > hitboxTop && 
@@ -79,16 +75,32 @@ class JogoQueda extends MinijogoBase {
   }
 
   gerarNuvem(velAtual) {
-    let larguraSorteada = random(350, 560); 
-    let alturaSorteada = random(150,200);
-    // larguraSorteada > 500 ? alturaSorteada = random(120, 180) : alturaSorteada;
+    let larguraSorteada = random(300, 500); 
+    let alturaSorteada = larguraSorteada * 0.5;
+
+    // ── PROCURA AS NUVENS NO SPRITES_OBJETOS ──
+    let nuvensDisponiveis = [];
+    if (typeof SPRITES_OBJETOS !== 'undefined') {
+      if (SPRITES_OBJETOS.nuvem1) nuvensDisponiveis.push(SPRITES_OBJETOS.nuvem1);
+      if (SPRITES_OBJETOS.nuvem2) nuvensDisponiveis.push(SPRITES_OBJETOS.nuvem2);
+      if (SPRITES_OBJETOS.nuvem3) nuvensDisponiveis.push(SPRITES_OBJETOS.nuvem3);
+      if (SPRITES_OBJETOS.nuvem4) nuvensDisponiveis.push(SPRITES_OBJETOS.nuvem4);
+      // Se futuramente quiser adicionar nuvem2, nuvem3, etc., basta adicionar as checagens aqui:
+      // if (SPRITES_OBJETOS.nuvem2) nuvensDisponiveis.push(SPRITES_OBJETOS.nuvem2);
+    }
+
+    let spriteSorteado = null;
+    if (nuvensDisponiveis.length > 0) {
+      spriteSorteado = random(nuvensDisponiveis);
+    }
 
     this.nuvens.push({
       x: random(larguraSorteada / 2, width - larguraSorteada / 2),
       y: height + alturaSorteada,
-      velocidade: velAtual * random(0.7, 1), 
+      velocidade: velAtual * random(0.8, 1.2), 
       largura: larguraSorteada,
-      altura: alturaSorteada
+      altura: alturaSorteada,
+      sprite: spriteSorteado
     });
   }
 
@@ -96,12 +108,21 @@ class JogoQueda extends MinijogoBase {
     background('#38bdf8'); 
     noStroke();
 
-    // ── Desenhar Nuvens Largas ──
+    // ── Desenhar Nuvens (Sprites ou Formas Geométricas) ──
     for (let nuvem of this.nuvens) {
-      fill(255, 255, 255, 230);
-      ellipse(nuvem.x, nuvem.y, nuvem.largura, nuvem.altura); 
-      ellipse(nuvem.x - nuvem.largura * 0.3, nuvem.y + 10, nuvem.largura * 0.4, nuvem.altura * 0.8);
-      ellipse(nuvem.x + nuvem.largura * 0.3, nuvem.y + 10, nuvem.largura * 0.4, nuvem.altura * 0.8);
+      if (nuvem.sprite) {
+        // Se a nuvem tiver um Sprite carregado, desenha a imagem
+        push();
+        imageMode(CENTER);
+        image(nuvem.sprite, nuvem.x, nuvem.y, nuvem.largura, nuvem.altura);
+        pop();
+      } else {
+        // Fallback
+        fill(255, 255, 255, 230);
+        ellipse(nuvem.x, nuvem.y, nuvem.largura, nuvem.altura); 
+        ellipse(nuvem.x - nuvem.largura * 0.3, nuvem.y + 10, nuvem.largura * 0.4, nuvem.altura * 0.8);
+        ellipse(nuvem.x + nuvem.largura * 0.3, nuvem.y + 10, nuvem.largura * 0.4, nuvem.altura * 0.8);
+      }
     }
 
     // ── DESENHAR O CHOUCHOU ──
@@ -129,14 +150,14 @@ class JogoQueda extends MinijogoBase {
     }
 
     // ── Monitor de FPS ──
-    if (frameCount % 30 === 0) this.fpsEstavel = frameRate();
-    push();
-    textFont('sans-serif'); 
-    fill(this.fpsEstavel > 45 ? '#16a34a' : '#dc2626');
-    textSize(20);
-    textAlign(LEFT, TOP);
-    text("FPS: " + this.fpsEstavel.toFixed(0), 40, 80);
-    pop();
+    // if (frameCount % 30 === 0) this.fpsEstavel = frameRate();
+    // push();
+    // textFont('sans-serif'); 
+    // fill(this.fpsEstavel > 45 ? '#16a34a' : '#dc2626');
+    // textSize(20);
+    // textAlign(LEFT, TOP);
+    // text("FPS: " + this.fpsEstavel.toFixed(0), 40, 80);
+    // pop();
   }
 
   sairDoJogo() {

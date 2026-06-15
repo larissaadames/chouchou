@@ -64,6 +64,11 @@ function carregarElementos() {
   SPRITES_OBJETOS.disparervilha = loadImage('assets/sprites/objetos/disparervilha.png')
   SPRITES_OBJETOS.sol = loadImage('assets/sprites/objetos/sol.png')
 
+  SPRITES_OBJETOS.nuvem1 = loadImage('assets/sprites/objetos/nuvens/nuvem1.png')
+  SPRITES_OBJETOS.nuvem2 = loadImage('assets/sprites/objetos/nuvens/nuvem2.png')
+  SPRITES_OBJETOS.nuvem3 = loadImage('assets/sprites/objetos/nuvens/nuvem3.png') 
+  SPRITES_OBJETOS.nuvem4 = loadImage('assets/sprites/objetos/nuvens/nuvem4.png') 
+
   SPRITES_ROUPAS.camisa10 = loadImage('assets/sprites/roupas/camisa10.png')
   SPRITES_ROUPAS.saia     = loadImage('assets/sprites/roupas/saia.png')
   SPRITES_ROUPAS.terno    = loadImage('assets/sprites/roupas/terno.png')
@@ -75,7 +80,8 @@ function carregarElementos() {
 const SPRITES_PREVIEWS = {}
 
 function carregarPreviews(){
-  SPRITES_PREVIEWS.jogocomida = loadImage('assets/sprites/previews/food_drop.png');
+  SPRITES_PREVIEWS.jogocomida = loadImage('assets/sprites/previews/food_drop_preview.png');
+  SPRITES_PREVIEWS.jogoqueda = loadImage('assets/sprites/previews/free_fall_preview.png');
   // SPRITES_PREVIEWS.jogoqueda = loadImage('assets/sprites/previews/free_fall.png');
 
 }
