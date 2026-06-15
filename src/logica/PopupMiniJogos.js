@@ -195,6 +195,7 @@ class PopupMinijogos {
     this.arrastandoScroll = false;
     
     if (this.jogoPressionado && !this.arrastou) {
+      sceneManager.irPara(this.jogoPressionado.id);
       console.log("Abrir minijogo:", this.jogoPressionado.id);
     }
     this.jogoPressionado = null;
