@@ -261,7 +261,7 @@ class ComodoScene {
     noStroke()
     textAlign(CENTER, CENTER)
     textSize(13)
-    text('← Voltar', v.x + v.w/2, v.y + v.h/2)
+    text('<- Voltar', v.x + v.w/2, v.y + v.h/2)
 
     // ── Seta esquerda ─────────────────────────────────────────────────────
     const se = this.areaSetaEsq
@@ -270,7 +270,7 @@ class ComodoScene {
     fill(255)
     textAlign(CENTER, CENTER)
     textSize(22)
-    text('‹', se.x + se.w/2, se.y + se.h/2)
+    text('<-', se.x + se.w/2, se.y + se.h/2)
 
     // ── Nome do cômodo ────────────────────────────────────────────────────
     fill(255)
@@ -292,7 +292,7 @@ class ComodoScene {
     fill(255)
     textAlign(CENTER, CENTER)
     textSize(22)
-    text('›', sd.x + sd.w/2, sd.y + sd.h/2)
+    text('->', sd.x + sd.w/2, sd.y + sd.h/2)
   }
 
   // ── Detecção de clique ────────────────────────────────────────────────────

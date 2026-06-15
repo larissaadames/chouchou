@@ -11,7 +11,8 @@ let fonteCustomizada
 // Chamado pelo p5 antes de tudo — ideal para carregar imagens e sons
 function preload() {
   chouchou = new Chouchou()
-  carregarSpritesChouchou(chouchou) // preenche os sprites quando os PNGs existirem
+  carregarSpritesChouchou(chouchou)
+  carregarCenarios()
   carregarElementos()
   fonteCustomizada = loadFont('assets/fonts/Pou-RMR6.ttf')
 }

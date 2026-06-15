@@ -29,36 +29,29 @@
 // Para adicionar um novo elemento: copie um bloco e ajuste os valores.
 const CATALOGO_COMIDAS = {
   nitrogenio: {
-    id:        'nitrogenio',
-    nome:      'Nitrogênio',
-    simbolo:   'N',
-    cor:       '#4ade80',
-    corEscura: '#15803d',
-    fome:      +20,
-    imagem:    null, // carregado em carregarElementos() no ChouchouLoader.js
+    id: 'nitrogenio', nome: 'Nitrogênio', simbolo: 'N',
+    cor: '#4ade80', corEscura: '#15803d', fome: +20, imagem: null,
   },
-
-  // ── Próximos elementos (comentados — descomente quando quiser adicionar) ──
-  // fosforo: {
-  //   id: 'fosforo', nome: 'Fósforo', simbolo: 'P',
-  //   cor: '#fb923c', corEscura: '#c2410c', fome: +15, imagem: null,
-  // },
-  // potassio: {
-  //   id: 'potassio', nome: 'Potássio', simbolo: 'K',
-  //   cor: '#a78bfa', corEscura: '#6d28d9', fome: +18, imagem: null,
-  // },
-  // calcio: {
-  //   id: 'calcio', nome: 'Cálcio', simbolo: 'Ca',
-  //   cor: '#f9a8d4', corEscura: '#be185d', fome: +12, imagem: null,
-  // },
-  // magnesio: {
-  //   id: 'magnesio', nome: 'Magnésio', simbolo: 'Mg',
-  //   cor: '#67e8f9', corEscura: '#0e7490', fome: +10, imagem: null,
-  // },
-  // enxofre: {
-  //   id: 'enxofre', nome: 'Enxofre', simbolo: 'S',
-  //   cor: '#fde047', corEscura: '#a16207', fome: +8, imagem: null,
-  // },
+  fosforo: {
+    id: 'fosforo', nome: 'Fósforo', simbolo: 'P',
+    cor: '#fb923c', corEscura: '#c2410c', fome: +15, imagem: null,
+  },
+  potassio: {
+    id: 'potassio', nome: 'Potássio', simbolo: 'K',
+    cor: '#a78bfa', corEscura: '#6d28d9', fome: +18, imagem: null,
+  },
+  calcio: {
+    id: 'calcio', nome: 'Cálcio', simbolo: 'Ca',
+    cor: '#f9a8d4', corEscura: '#be185d', fome: +12, imagem: null,
+  },
+  magnesio: {
+    id: 'magnesio', nome: 'Magnésio', simbolo: 'Mg',
+    cor: '#67e8f9', corEscura: '#0e7490', fome: +10, imagem: null,
+  },
+  enxofre: {
+    id: 'enxofre', nome: 'Enxofre', simbolo: 'S',
+    cor: '#fde047', corEscura: '#a16207', fome: +8, imagem: null,
+  },
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -70,7 +63,7 @@ class FoodSystem {
     // ── Inventário do jogador ─────────────────────────────────────────────────
     // Array de IDs. Começa com Nitrogênio para testar a mecânica.
     // Futuramente virá do SaveSystem (fase 7).
-    this.inventario = ['nitrogenio']
+    this.inventario = ['nitrogenio', 'fosforo', 'potassio', 'calcio', 'magnesio', 'enxofre']
 
     // ── Geladeira (área clicável) ─────────────────────────────────────────────
     // Posição definida em draw() quando width/height já existem.
@@ -111,13 +104,15 @@ class FoodSystem {
 
   // ── Update ────────────────────────────────────────────────────────────────
   update() {
-    // Inicializa a geladeira na primeira vez (width/height disponíveis aqui)
+    // ── Inicializa posição da máquina na primeira vez ─────────────────────────
+    // A máquina fica no centro superior, abaixo da HUD (y=66).
+    // Guardamos a área clicável para detectar o clique no mousePressed.
     if (!this.geladeira.pronta) {
-      this.geladeira.x     = width - this.geladeira.w - 12
-      this.geladeira.y     = height * 0.32
+      this.geladeira.x      = width / 2 - 433 / 2
+      this.geladeira.y      = 66
+      this.geladeira.w      = 433
+      this.geladeira.h      = 231
       this.geladeira.pronta = true
-
-      // Sorteia o primeiro item automaticamente
       this._sortearItemAtivo()
     }
 
@@ -136,30 +131,38 @@ class FoodSystem {
   draw() {
     if (!this.geladeira.pronta) return
 
-    push() // isola todo o estado gráfico do FoodSystem
-    this._desenharGeladeira()
+    push()
+    // O menu abre sobre a máquina de elementos (desenhada pela Cozinha)
     if (this.menuAberto) this._desenharMenu()
-    if (this.itemAtivo)  {
-        this._desenharElemento(
+    if (this.itemAtivo) {
+      this._desenharElemento(
         this.itemAtivo.x,
         this.itemAtivo.y,
         this.itemAtivo,
         this.itemAtivo.arrastando ? 1.1 : 1.0
       )
     }
-    pop() // restaura textAlign, fill, stroke, etc. para o SceneManager
+    pop()
   }
 
   // ── Eventos de mouse ──────────────────────────────────────────────────────
 
   mousePressed() {
-    // ── Clicou na geladeira → abre/fecha menu ────────────────────────────────
+    // ── Clicou no item ativo → inicia arrasto (tem prioridade sobre a máquina)
+    if (this.itemAtivo && !this.itemAtivo.arrastando) {
+      if (dist(mouseX, mouseY, this.itemAtivo.x, this.itemAtivo.y) < 40) {
+        this.itemAtivo.arrastando = true
+        return  // ← return aqui para não cair no clique da máquina
+      }
+    }
+
+    // ── Clicou na máquina → abre/fecha menu
     if (this._dentroGeladeira(mouseX, mouseY)) {
       this.menuAberto = !this.menuAberto
       return
     }
 
-    // ── Menu aberto → clicou num item do menu ────────────────────────────────
+    // ── Menu aberto → clicou num item do menu
     if (this.menuAberto) {
       for (const opcao of this.opcoesMenu) {
         if (dist(mouseX, mouseY, opcao.x, opcao.y) < 32) {
@@ -168,16 +171,7 @@ class FoodSystem {
           return
         }
       }
-      // Clicou fora do menu → fecha
       this.menuAberto = false
-      return
-    }
-
-    // ── Clicou no item ativo → inicia arrasto ────────────────────────────────
-    if (this.itemAtivo && !this.itemAtivo.arrastando) {
-      if (dist(mouseX, mouseY, this.itemAtivo.x, this.itemAtivo.y) < 40) {
-        this.itemAtivo.arrastando = true
-      }
     }
   }
 
@@ -214,9 +208,10 @@ class FoodSystem {
     const id  = this.inventario[floor(random(this.inventario.length))]
     const def = CATALOGO_COMIDAS[id]
 
-    // Posição fixa: centro horizontal, próximo ao rodapé (acima da HUD)
+    // Posição fixa: saída da máquina de elementos (centro-X, base da máquina)
+    // Máquina: 433×231, centrada em width/2, topo em y=66
     const fixoX = width / 2
-    const fixoY = height - 140  // acima da barra de stats (72px) + margem
+    const fixoY = 66 + 231 - 40  // base da máquina com pequena margem
 
     this.itemAtivo = { ...def, x: fixoX, y: fixoY, fixoX, fixoY, arrastando: false }
   }
@@ -225,7 +220,7 @@ class FoodSystem {
   _selecionarItem(id) {
     const def    = CATALOGO_COMIDAS[id]
     const fixoX  = width / 2
-    const fixoY  = height - 140
+    const fixoY  = 66 + 231 - 40
 
     this.itemAtivo = { ...def, x: fixoX, y: fixoY, fixoX, fixoY, arrastando: false }
   }
@@ -280,11 +275,12 @@ class FoodSystem {
   _desenharMenu() {
     this.opcoesMenu = [] // recalcula a cada frame
 
-    const itens   = this.inventario
-    const menuX   = this.geladeira.x - 130
-    const menuY   = this.geladeira.y
-    const itemH   = 52
-    const menuW   = 120
+    const itens  = this.inventario
+    const itemH  = 52
+    const menuW  = 130
+    // Menu abre abaixo da máquina, centralizado
+    const menuX  = width / 2 - menuW / 2
+    const menuY  = 66 + 231 + 8  // base da máquina + pequena margem
 
     // Fundo do menu
     noStroke()
@@ -338,7 +334,7 @@ class FoodSystem {
     if (def.imagem) {
       // PNG do elemento
       imageMode(CENTER)
-      image(def.imagem, 0, 0, 80, 80)
+      image(def.imagem, 0, 0, 52, 52)
     } else {
       // Fallback: círculo com símbolo químico
       fill(def.cor)
@@ -360,7 +356,7 @@ class FoodSystem {
     fill(255, 255, 255, 200)
     textAlign(CENTER, CENTER)
     textSize(9)
-    text(def.nome, 0, 50)
+    text(def.nome, 0, 34)
 
     pop()
   }

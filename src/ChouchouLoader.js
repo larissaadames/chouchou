@@ -1,50 +1,54 @@
 // ─── ChouchouLoader ───────────────────────────────────────────────────────────
-// Responsável por carregar todos os sprites e injetá-los na instância Chouchou.
-// Chamado dentro do preload() do p5.js, antes do setup().
-//
-// Como usar quando os PNGs estiverem prontos:
-//   Substitua o array vazio [] por loadImage('caminho/do/arquivo.png')
-//   Ex: idle: [ loadImage('assets/sprites/corpo/idle_01.png'),
-//               loadImage('assets/sprites/corpo/idle_02.png') ]
+// Carrega todos os sprites, fundos e objetos do jogo.
+// Todas as funções aqui são chamadas dentro do preload() do p5.js.
 // ──────────────────────────────────────────────────────────────────────────────
 
 function carregarSpritesChouchou(chouchou) {
 
-  // ── Corpo (base branca/cinza — cor aplicada via tint) ─────────────────────
-  // Cada estado tem um array de frames para animação.
-  // Um único frame = personagem estático naquele estado.
+  // ── Corpo (cor aplicada via tint) ─────────────────────────────────────────
   chouchou.sprites.corpo = {
     idle:       [loadImage('assets/sprites/corpo/idle01.png')],
     feliz:      [loadImage('assets/sprites/corpo/idle01.png')],
-    bocaAberta: [loadImage('assets/sprites/corpo/idle01.png')], // boca aberta esperando a comida
-    comendo:    [loadImage('assets/sprites/corpo/idle01.png')], // frame 1 mastigando
-    // quando ccComendo2.png existir, adicione:
-    // comendo: [loadImage('assets/sprites/corpo/idle01.png'),
-    //           loadImage('assets/sprites/corpo/idle01.png')],
+    bocaAberta: [loadImage('assets/sprites/corpo/idle01.png')],
+    comendo:    [loadImage('assets/sprites/corpo/idle01.png')],
     triste:     [loadImage('assets/sprites/corpo/idle01.png')],
     dormindo:   [loadImage('assets/sprites/corpo/idle01.png')],
   }
 
+  // ── Expressões (desenhadas por cima do corpo, sem tint) ───────────────────
   chouchou.sprites.expressao = {
     idle:       loadImage('assets/sprites/expressoes/ccBravo.png'),
     feliz:      loadImage('assets/sprites/expressoes/ccFeliz.png'),
-    bocaAberta: loadImage('assets/sprites/expressoes/ccBocaAberta.png'), // boca aberta
-    comendo: [ loadImage('assets/sprites/expressoes/ccBocaAberta.png'), // boca aberta
-              loadImage('assets/sprites/expressoes/ccBocaFechada.png')], // boca fechada, // mastigando
-    // quando ccComendo2.png existir:
-    // comendo usa frameAtual para alternar corpo, mas expressão é única por estado.
-    // Para alternar expressão também, usaremos sprites.expressaoFrames no futuro.
+    bocaAberta: loadImage('assets/sprites/expressoes/ccBocaAberta.png'),
+    comendo:  [ loadImage('assets/sprites/expressoes/ccBocaAberta.png'),
+                loadImage('assets/sprites/expressoes/ccBocaFechada.png') ],
     triste:     loadImage('assets/sprites/expressoes/ccMal.png'),
     dormindo:   null,
   }
 
-  // ── Roupa (opcional — desenhada por cima de tudo) ─────────────────────────
-  chouchou.sprites.roupa = null,// ex: loadImage('assets/sprites/roupas/pijama.png')
-
-  chouchou.sprites.chapeu = null // ex: loadImage('assets/sprites/acessorios/chapeu.png')
+  chouchou.sprites.roupa  = null
+  chouchou.sprites.chapeu = null
 }
 
+// ── Fundos e objetos de cenário ───────────────────────────────────────────────
+// Objeto global acessível pelos cômodos.
+const SPRITES_CENARIO = {}
+
+function carregarCenarios() {
+  SPRITES_CENARIO.laboratorio    = loadImage('assets/sprites/fundos/laboratorio.png')
+  SPRITES_CENARIO.quarto         = loadImage('assets/sprites/fundos/quarto.png')
+  SPRITES_CENARIO.jardim         = loadImage('assets/sprites/fundos/jardim.png')
+  SPRITES_CENARIO.maquinaElement = loadImage('assets/sprites/objetos/maquina_elementos.png')
+}
+
+// ── Elementos químicos ────────────────────────────────────────────────────────
+// Para adicionar um novo elemento: descomente no CATALOGO_COMIDAS (FoodSystem.js)
+// e adicione a linha loadImage correspondente aqui.
 function carregarElementos() {
   CATALOGO_COMIDAS.nitrogenio.imagem = loadImage('assets/sprites/elementos/nitrogenio_N.png')
-  // futuros elementos aqui
+  CATALOGO_COMIDAS.fosforo.imagem    = loadImage('assets/sprites/elementos/fosforo_P.png')
+  CATALOGO_COMIDAS.potassio.imagem   = loadImage('assets/sprites/elementos/potassio_K.png')
+  CATALOGO_COMIDAS.calcio.imagem     = loadImage('assets/sprites/elementos/calcio_Ca.png')
+  CATALOGO_COMIDAS.magnesio.imagem   = loadImage('assets/sprites/elementos/magnesio_Mg.png')
+  CATALOGO_COMIDAS.enxofre.imagem    = loadImage('assets/sprites/elementos/enxofre_S.png')
 }
