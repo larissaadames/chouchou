@@ -148,6 +148,7 @@ class ComodoScene {
       new Cozinha(chouchou),
       new Jardim(chouchou),
       new SalaJogos(chouchou),
+      new Loja(chouchou)
     ]
 
     // Áreas de toque dos botões do HUD (calculadas no aoEntrar)

@@ -40,7 +40,9 @@ function carregarCenarios() {
   SPRITES_CENARIO.laboratorio    = loadImage('assets/sprites/fundos/laboratorio.png')
   SPRITES_CENARIO.quarto         = loadImage('assets/sprites/fundos/quarto.png')
   SPRITES_CENARIO.jardim         = loadImage('assets/sprites/fundos/jardim.png')
+  SPRITES_CENARIO.loja           = loadImage('assets/sprites/fundos/loja.png')
   SPRITES_CENARIO.salajogos      = loadImage('assets/sprites/fundos/salajogos.png')
+
   SPRITES_CENARIO.food_drop       = loadImage('assets/sprites/fundos/food_drop.png')
 }
 
@@ -63,6 +65,8 @@ function carregarElementos() {
   SPRITES_OBJETOS.armario            = loadImage('assets/sprites/objetos/armario.png')
   SPRITES_OBJETOS.disparervilha = loadImage('assets/sprites/objetos/disparervilha.png')
   SPRITES_OBJETOS.sol = loadImage('assets/sprites/objetos/sol.png')
+
+  SPRITES_OBJETOS.carro          = loadImage('assets/sprites/objetos/carro.png')
 
   SPRITES_OBJETOS.nuvem1 = loadImage('assets/sprites/objetos/nuvens/nuvem1.png')
   SPRITES_OBJETOS.nuvem2 = loadImage('assets/sprites/objetos/nuvens/nuvem2.png')
