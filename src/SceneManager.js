@@ -149,13 +149,13 @@ class ComodoScene {
 
     // Áreas de toque dos botões do HUD (calculadas no aoEntrar)
     this.areaVoltar   = {}
-    this.areaSetaEsq  = {}
-    this.areaSetaDir  = {}
   }
 
   get comodoAtivo() {
     return this.comodos[this.indice]
   }
+  get areaSetaEsq() { return { x: width/2 - 140, y: 14, w: 42, h: 38 } }
+  get areaSetaDir() { return { x: width/2 + 98,  y: 14, w: 42, h: 38 } }
 
   irProximo() {
     this.indice = (this.indice + 1) % this.comodos.length
@@ -170,9 +170,7 @@ class ComodoScene {
     this.chouchou.inicializar()
 
     // Calcula áreas de toque do HUD uma única vez
-    this.areaVoltar  = { x: 12,            y: 14, w: 80,  h: 38 }
-    this.areaSetaEsq = { x: width/2 - 140, y: 14, w: 42,  h: 38 }
-    this.areaSetaDir = { x: width/2 + 98,  y: 14, w: 42,  h: 38 }
+    this.areaVoltar  = { x: 12, y: 14, w: 80, h: 38 }
 
     console.log(`[ComodoScene] entrou → ${this.comodoAtivo.nome}`)
   }
