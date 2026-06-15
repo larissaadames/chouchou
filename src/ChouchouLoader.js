@@ -3,7 +3,7 @@
 // Todas as funções aqui são chamadas dentro do preload() do p5.js.
 // ──────────────────────────────────────────────────────────────────────────────
 
-let SPRITES_OBJETOS = {};
+
 
 function carregarSpritesChouchou(chouchou) {
 
@@ -45,6 +45,10 @@ function carregarCenarios() {
 // ── Elementos químicos ────────────────────────────────────────────────────────
 // Para adicionar um novo elemento: descomente no CATALOGO_COMIDAS (FoodSystem.js)
 // e adicione a linha loadImage correspondente aqui.
+let SPRITES_OBJETOS = {};
+let SPRITES_ROUPAS = {};
+let SPRITES_CHAPEU = {};
+
 function carregarElementos() {
   CATALOGO_COMIDAS.nitrogenio.imagem = loadImage('assets/sprites/elementos/nitrogenio_N.png')
   CATALOGO_COMIDAS.fosforo.imagem    = loadImage('assets/sprites/elementos/fosforo_P.png')
@@ -52,5 +56,13 @@ function carregarElementos() {
   CATALOGO_COMIDAS.calcio.imagem     = loadImage('assets/sprites/elementos/calcio_Ca.png')
   CATALOGO_COMIDAS.magnesio.imagem   = loadImage('assets/sprites/elementos/magnesio_Mg.png')
   CATALOGO_COMIDAS.enxofre.imagem    = loadImage('assets/sprites/elementos/enxofre_S.png')
-  SPRITES_OBJETOS.regador = loadImage('assets/sprites/objetos/regador.png')
+  SPRITES_OBJETOS.regador            = loadImage('assets/sprites/objetos/regador.png')
+  SPRITES_OBJETOS.armario            = loadImage('assets/sprites/objetos/armario.png')
+  SPRITES_ROUPAS.camisa10 = loadImage('assets/sprites/roupas/camisa10.png')
+  SPRITES_ROUPAS.saia     = loadImage('assets/sprites/roupas/saia.png')
+  SPRITES_ROUPAS.terno    = loadImage('assets/sprites/roupas/terno.png')
+  SPRITES_CHAPEU.caule   = loadImage('assets/sprites/chapeu/caule.png');
+  SPRITES_CHAPEU.lacinho = loadImage('assets/sprites/chapeu/lacinho.png');
+  SPRITES_CHAPEU.panela  = loadImage('assets/sprites/chapeu/panela.png');
+
 }
