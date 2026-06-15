@@ -16,7 +16,7 @@ class JogoQueda extends MinijogoBase {
     this.jogadorY = 160; 
 
     this.velocidadeX = 0;
-    this.aceleracao = 0.2; 
+    this.aceleracao = 0.25; 
     this.atrito = 0.15; 
 
     // Toca a música de queda livre
@@ -82,7 +82,7 @@ class JogoQueda extends MinijogoBase {
       }
 
       if (nuvem.y < -nuvem.altura) {
-        this.pontuacao += 10; 
+        this.pontuacao += 15; 
         this.nuvens.splice(i, 1);
       }
     }

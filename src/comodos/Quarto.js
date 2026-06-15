@@ -214,10 +214,10 @@ class Quarto {
         noStroke();
         fill(0, 0, 0, 180); // Película escura
         ellipse(x + tamanhoItem/2, y + tamanhoItem/2, tamanhoItem, tamanhoItem);
-        fill(255);
+        fill(0);
         textAlign(CENTER, CENTER);
         textSize(24);
-        text("🔒", x + tamanhoItem/2, y + tamanhoItem/2);
+        text("X", x + tamanhoItem/2, y + tamanhoItem/2);
       }
     }
     pop();

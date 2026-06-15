@@ -258,14 +258,14 @@ class ComodoScene {
     rect(0, 0, width, 66)
 
     // ── Botão Voltar ──────────────────────────────────────────────────────
-    const v = this.areaVoltar
-    fill(255, 255, 255, 25)
-    rect(v.x, v.y, v.w, v.h, 10)
-    fill(255)
-    noStroke()
-    textAlign(CENTER, CENTER)
-    textSize(13)
-    text('<- Voltar', v.x + v.w/2, v.y + v.h/2)
+    // const v = this.areaVoltar
+    // fill(255, 255, 255, 25)
+    // rect(v.x, v.y, v.w, v.h, 10)
+    // fill(255)
+    // noStroke()
+    // textAlign(CENTER, CENTER)
+    // textSize(13)
+    // text('<- Voltar', v.x + v.w/2, v.y + v.h/2)
 
     // ── Seta esquerda ─────────────────────────────────────────────────────
     const se = this.areaSetaEsq

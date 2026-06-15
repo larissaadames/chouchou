@@ -4,7 +4,7 @@ class Loja {
     this.chouchou = chouchou;
     
     // Desloca o Chouchou cerca de 35% da tela para a esquerda
-    this.deslocamentoChouchou = width * 0.35; 
+    this.deslocamentoChouchou = width * 0.40; 
     this.escalaChouchou = 1.25; 
 
     // ── CONFIGURAÇÕES DA LOJA ORIGINAIS PRESURVADAS ──
@@ -32,6 +32,16 @@ class Loja {
 
     // ── CATÁLOGO DE ITENS COMPLETO (6 Roupas/Chapéus + 12 Cores) ──
     this.catalogo = [
+      
+
+      // Itens originais mantidos
+      { id: 'camisa10', nome: 'Camisa 10', tipo: 'roupa',  preco: 50,  imagem: typeof SPRITES_ROUPAS !== 'undefined' ? SPRITES_ROUPAS.camisa10 : null },
+      { id: 'saia',     nome: 'Saia',      tipo: 'roupa',  preco: 60,  imagem: typeof SPRITES_ROUPAS !== 'undefined' ? SPRITES_ROUPAS.saia : null },
+      { id: 'terno',    nome: 'Terno',     tipo: 'roupa',  preco: 120, imagem: typeof SPRITES_ROUPAS !== 'undefined' ? SPRITES_ROUPAS.terno : null },
+      { id: 'caule',    nome: 'Caule',     tipo: 'chapeu', preco: 30,  imagem: typeof SPRITES_CHAPEU !== 'undefined' ? SPRITES_CHAPEU.caule : null },
+      { id: 'lacinho',  nome: 'Lacinho',   tipo: 'chapeu', preco: 40,  imagem: typeof SPRITES_CHAPEU !== 'undefined' ? SPRITES_CHAPEU.lacinho : null },
+      { id: 'panela',   nome: 'Panela',    tipo: 'chapeu', preco: 80,  imagem: typeof SPRITES_CHAPEU !== 'undefined' ? SPRITES_CHAPEU.panela : null },
+
       // As 12 Cores Básicas adicionadas ao escopo
       { id: 'cor_bege',    nome: 'Padrão',   tipo: 'cor', preco: 0,   rgb: {r: 50, g: 100, b: 50} }, 
       { id: 'cor_amarelo', nome: 'Amarelo',  tipo: 'cor', preco: 20,  rgb: {r: 250, g: 204, b: 21} },
@@ -44,15 +54,7 @@ class Loja {
       { id: 'cor_verde',   nome: 'Verde',    tipo: 'cor', preco: 30,  rgb: {r: 34, g: 197, b: 94} },
       { id: 'cor_marrom',  nome: 'Marrom',   tipo: 'cor', preco: 20,  rgb: {r: 139, g: 69, b: 19} },
       { id: 'cor_cinza',   nome: 'Cinza',    tipo: 'cor', preco: 15,  rgb: {r: 156, g: 163, b: 175} },
-      { id: 'cor_branco',  nome: 'Branco',   tipo: 'cor', preco: 50,  rgb: {r: 245, g: 245, b: 245} },
-
-      // Itens originais mantidos
-      { id: 'camisa10', nome: 'Camisa 10', tipo: 'roupa',  preco: 50,  imagem: typeof SPRITES_ROUPAS !== 'undefined' ? SPRITES_ROUPAS.camisa10 : null },
-      { id: 'saia',     nome: 'Saia',      tipo: 'roupa',  preco: 60,  imagem: typeof SPRITES_ROUPAS !== 'undefined' ? SPRITES_ROUPAS.saia : null },
-      { id: 'terno',    nome: 'Terno',     tipo: 'roupa',  preco: 120, imagem: typeof SPRITES_ROUPAS !== 'undefined' ? SPRITES_ROUPAS.terno : null },
-      { id: 'caule',    nome: 'Caule',     tipo: 'chapeu', preco: 30,  imagem: typeof SPRITES_CHAPEU !== 'undefined' ? SPRITES_CHAPEU.caule : null },
-      { id: 'lacinho',  nome: 'Lacinho',   tipo: 'chapeu', preco: 40,  imagem: typeof SPRITES_CHAPEU !== 'undefined' ? SPRITES_CHAPEU.lacinho : null },
-      { id: 'panela',   nome: 'Panela',    tipo: 'chapeu', preco: 80,  imagem: typeof SPRITES_CHAPEU !== 'undefined' ? SPRITES_CHAPEU.panela : null }
+      { id: 'cor_branco',  nome: 'Branco',   tipo: 'cor', preco: 50,  rgb: {r: 245, g: 245, b: 245} }
     ];
 
     this.totalPaginas = Math.ceil(this.catalogo.length / this.itensPorPagina);
@@ -94,12 +96,12 @@ class Loja {
     // ── 5. UI de Moedas do Jogador ──
     push();
     fill(0, 0, 0, 150);
-    rect(width - 160, 20, 140, 45, 20);
+    rect(width - 160, 60, 140, 45, 20);
     fill('#facc15');
     textAlign(RIGHT, CENTER);
     textSize(22);
     textStyle(BOLD);
-    text(`Moedas: ${this.chouchou.moedas}`, width - 40, 42);
+    text(`Moedas: ${this.chouchou.moedas}`, width - 40, 82);
     pop();
 
     // ── 6. VISUALIZADOR DE HITBOXES ──
