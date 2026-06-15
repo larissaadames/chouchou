@@ -3,6 +3,8 @@
 // Todas as funções aqui são chamadas dentro do preload() do p5.js.
 // ──────────────────────────────────────────────────────────────────────────────
 
+let SPRITES_OBJETOS = {};
+
 function carregarSpritesChouchou(chouchou) {
 
   // ── Corpo (cor aplicada via tint) ─────────────────────────────────────────
@@ -38,7 +40,6 @@ function carregarCenarios() {
   SPRITES_CENARIO.laboratorio    = loadImage('assets/sprites/fundos/laboratorio.png')
   SPRITES_CENARIO.quarto         = loadImage('assets/sprites/fundos/quarto.png')
   SPRITES_CENARIO.jardim         = loadImage('assets/sprites/fundos/jardim.png')
-  SPRITES_CENARIO.maquinaElement = loadImage('assets/sprites/objetos/maquina_elementos.png')
 }
 
 // ── Elementos químicos ────────────────────────────────────────────────────────
@@ -51,4 +52,5 @@ function carregarElementos() {
   CATALOGO_COMIDAS.calcio.imagem     = loadImage('assets/sprites/elementos/calcio_Ca.png')
   CATALOGO_COMIDAS.magnesio.imagem   = loadImage('assets/sprites/elementos/magnesio_Mg.png')
   CATALOGO_COMIDAS.enxofre.imagem    = loadImage('assets/sprites/elementos/enxofre_S.png')
+  SPRITES_OBJETOS.regador = loadImage('assets/sprites/objetos/regador.png')
 }

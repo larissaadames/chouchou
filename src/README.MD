@@ -29,7 +29,7 @@ Quer testar como fica primeiro e ajustar depois?
 
 
 
-Para adicionar comodo é só adicionar o comodo.js dentro do folder comodos -> adicionar o comodo no index.js e adicionar ele no this.comodos do SceneManager.js.
+Para adicionar comodo é só adicionar o comodo.js dentro do folder comodos -> adicionar o comodo no index.html e adicionar ele no this.comodos do SceneManager.js.
 
 ---
 

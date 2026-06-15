@@ -12,24 +12,43 @@ class Jardim {
     // ── Regador ───────────────────────────────────────────────────────────────
     this.regador = {
       x:         90,   // posição inicial (canto esquerdo)
-      y:         0,    // definido no primeiro draw() quando height existe
+      y:         0,    // Definido dinamicamente no update() assim que a tela carrega
       origemX:   90,   // posição de repouso — para onde volta ao soltar
       origemY:   0,
-      w:         100,
-      h:         88,
+      
+      // Ajuste o tamanho visual da imagem aqui se ficar muito grande ou pequena
+      visualW:   160,  // Largura visual do PNG
+      visualH:   140,  // Altura visual do PNG
+      
       arrastando: false,
     }
 
+    // ── AJUSTE DO BICO DO REGADOR (Importante para as gotas) ───────────────────
+    // Como trocamos a imagem, precisamos dizer ao p5 onde fica o bico
+    // RELATIVO AO CENTRO da imagem.
+    this.bicoOffset = {
+      x: 75,  // Quantos pixels para a DIREITA do centro da imagem sai a água
+      y: -20  // Quantos pixels para CIMA do centro da imagem sai a água
+    }
+
+    // Controle para inicializar as posições verticais uma única vez
+    this._inicializado = false
+
     // ── Partículas de água ────────────────────────────────────────────────────
-    // Cada gota: { x, y, vy, alpha }
     this.gotas = []
 
     // Cooldown para não aumentar a hidratação a cada frame
     this._cooldown = 0
   }
 
-  // ── update ────────────────────────────────────────────────────────────────
   update() {
+    // Inicializa a altura de repouso do regador na primeira execução
+    if (!this._inicializado && height > 0) {
+      this.regador.y = height * 0.35
+      this.regador.origemY = height * 0.35
+      this._inicializado = true
+    }
+
     // Segue o mouse enquanto arrasta
     if (this.regador.arrastando) {
       this.regador.x = mouseX
@@ -37,15 +56,15 @@ class Jardim {
 
       // ── Emite gotas quando o bico está acima do Chouchou ─────────────────
       const bico = this._posicaoBico()
-      const dentroAlcance = dist(bico.x, bico.y, this.chouchou.x, this.chouchou.y) < 90
+      const dentroAlcance = dist(bico.x, bico.y, this.chouchou.x, this.chouchou.y) < 100 // Aumentado um pouco o alcance
 
       if (dentroAlcance) {
         // Spawna 2 gotas por frame
         for (let i = 0; i < 2; i++) {
           this.gotas.push({
-            x:     bico.x + random(-8, 8),
+            x:     bico.x + random(-5, 5), // Menor dispersão
             y:     bico.y,
-            vy:    random(3, 6),
+            vy:    random(4, 7), // Gotas ligeiramente mais rápidas
             alpha: 255,
           })
         }
@@ -53,7 +72,7 @@ class Jardim {
         // Aumenta hidratação com cooldown (a cada 30 frames ≈ 0.5s)
         this._cooldown--
         if (this._cooldown <= 0) {
-          this.chouchou._alterarStat('hidratacao', +5)
+          this.chouchou._alterarStat('hidratação', +5)
           this.chouchou.setEstado('feliz')
           setTimeout(() => this.chouchou.setEstado('idle'), 800)
           this._cooldown = 30
@@ -70,67 +89,26 @@ class Jardim {
     this.gotas = this.gotas.filter(g => g.alpha > 0)
   }
 
-  // ── draw ──────────────────────────────────────────────────────────────────
   draw() {
-    // Inicializa y do regador na primeira vez (height já existe aqui)
-    if (this.regador.origemY === 0) {
-      this.regador.origemY = height * 0.58
-      this.regador.y       = height * 0.58
+    // ── Camada 1: Fundo do Jardim ───────────────────────────────────────────
+    if (SPRITES_CENARIO.jardim) {
+      imageMode(CORNER)
+      image(SPRITES_CENARIO.jardim, 0, 0, width, height)
+    } else {
+      background('#2e4a2e')
     }
 
-    // ── Fundo: jardim ensolarado ───────────────────────────────────────────
-    background('#87CEEB') // céu azul
-
-    // Grama
-    noStroke()
-    fill('#4ade80')
-    rect(0, height * 0.70, width, height * 0.30)
-
-    // Grama mais escura (chão)
-    fill('#16a34a')
-    rect(0, height * 0.75, width, height * 0.25)
-
-    // ── Sol ───────────────────────────────────────────────────────────────
-    fill('#fde047')
-    noStroke()
-    ellipse(width - 70, 90, 70, 70)
-    // Raios
-    stroke('#fde047')
-    strokeWeight(3)
-    for (let a = 0; a < TWO_PI; a += PI / 4) {
-      const r1 = 42, r2 = 58
-      line(
-        width - 70 + cos(a) * r1, 90 + sin(a) * r1,
-        width - 70 + cos(a) * r2, 90 + sin(a) * r2
-      )
-    }
-    noStroke()
-
-    // ── Flores decorativas ────────────────────────────────────────────────
-    this._flor(60,  height * 0.70, '#f472b6')
-    this._flor(110, height * 0.68, '#fb923c')
-    this._flor(width - 60,  height * 0.70, '#a78bfa')
-    this._flor(width - 110, height * 0.68, '#34d399')
-
-    // ── Arbustos de fundo ─────────────────────────────────────────────────
-    fill('#15803d')
-    ellipse(40,        height * 0.62, 90, 60)
-    ellipse(width - 40, height * 0.62, 90, 60)
-    fill('#16a34a')
-    ellipse(40,        height * 0.60, 70, 50)
-    ellipse(width - 40, height * 0.60, 70, 50)
-
-    // ── Chouchou ──────────────────────────────────────────────────────────
+    // ── Camada 2: Chouchou ──────────────────────────────────────────────────
     this.chouchou.draw()
 
-    // ── Gotas de água ─────────────────────────────────────────────────────
+    // ── Camada 3: Gotas de água ─────────────────────────────────────────────
     noStroke()
     for (const g of this.gotas) {
       fill(96, 165, 250, g.alpha) // azul claro
       ellipse(g.x, g.y, 6, 9)
     }
 
-    // ── Regador ───────────────────────────────────────────────────────────
+    // ── Camada 4: Regador (IMAGEM) ─────────────────────────────────────────
     this._desenharRegador(this.regador.x, this.regador.y)
 
     // ── Dica inicial ──────────────────────────────────────────────────────
@@ -139,85 +117,56 @@ class Jardim {
       noStroke()
       textAlign(CENTER, CENTER)
       textSize(13)
-      text('Arraste o regador até o Chouchou 💧', width / 2, height * 0.88)
+      text('Arraste o regador até o Chuchu', width / 2, height * 0.88)
     }
   }
 
-  // ── Desenha o regador com formas p5 ───────────────────────────────────────
+  // ── Desenha o regador usando o Sprite PNG ──────────────────────────────────
   _desenharRegador(x, y) {
     push()
-    translate(x, y)
-    scale(1.6) // dobra o tamanho visual sem reescrever cada coordenada
-
-    noStroke()
-
-    // Cabo (retângulo inclinado)
-    fill('#92400e')
-    rect(-28, -10, 34, 12, 4)
-
-    // Corpo principal (balde)
-    fill('#38bdf8')
-    rect(-10, -22, 38, 30, 6)
-
-    // Detalhe brilho no corpo
-    fill(255, 255, 255, 60)
-    rect(-6, -18, 12, 20, 4)
-
-    // Alça do cabo (semicírculo)
-    noFill()
-    stroke('#92400e')
-    strokeWeight(5)
-    arc(-20, -10, 24, 28, -HALF_PI, HALF_PI)
-    noStroke()
-
-    // Bico (tubo saindo do lado direito)
-    fill('#0284c7')
-    rect(26, -8, 22, 8, 0, 4, 4, 0)
-
-    // Ponta do bico (roseta com furinhos)
-    fill('#0369a1')
-    ellipse(50, -4, 14, 14)
-    fill('#7dd3fc')
-    for (let i = 0; i < 4; i++) {
-      const a = (i / 4) * TWO_PI
-      ellipse(50 + cos(a) * 3.5, -4 + sin(a) * 3.5, 2.5, 2.5)
+    // Verifica se a imagem global foi carregada antes de tentar desenhar
+    if (typeof SPRITES_OBJETOS !== 'undefined' && SPRITES_OBJETOS.regador) {
+      imageMode(CENTER) // Desenha a partir do centro (x, y)
+      image(
+        SPRITES_OBJETOS.regador,
+        x,
+        y,
+        this.regador.visualW,
+        this.regador.visualH
+      )
+    } else {
+      // Fallback visual caso a imagem não carregue (retângulo azul)
+      rectMode(CENTER)
+      fill('#38bdf8')
+      rect(x, y, 100, 80, 8)
+      fill(255)
+      textSize(10)
+      textAlign(CENTER, CENTER)
+      text('PNG Faltando', x, y)
     }
-    ellipse(50, -4, 2.5, 2.5)
-
     pop()
   }
 
-  // ── Posição do bico do regador (ponta de onde sai a água) ─────────────────
+  // ── Posição EXATA do bico do regador baseado na imagem ───────────────────
   _posicaoBico() {
-    // O scale(1.6) desloca o bico — compensamos multiplicando a offset pelo fator
-    return { x: this.regador.x + 50 * 1.6, y: this.regador.y - 4 * 1.6 }
-  }
-
-  // ── Florzinha decorativa ───────────────────────────────────────────────────
-  _flor(x, y, cor) {
-    noStroke()
-    // Caule
-    fill('#15803d')
-    rect(x - 2, y, 4, 22)
-    // Pétalas
-    fill(cor)
-    for (let a = 0; a < TWO_PI; a += PI / 3) {
-      ellipse(x + cos(a) * 9, y - 4 + sin(a) * 9, 10, 10)
+    // Soma a posição do centro do regador com os ajustes definidos no constructor
+    return { 
+      x: this.regador.x + this.bicoOffset.x, 
+      y: this.regador.y + this.bicoOffset.y 
     }
-    // Centro
-    fill('#fde047')
-    ellipse(x, y - 4, 11, 11)
   }
 
   // ── Eventos de mouse ──────────────────────────────────────────────────────
   mousePressed() {
-    const r = this.regador
-    // Verifica se clicou perto do regador (área generosa para toque mobile)
-    if (dist(mouseX, mouseY, r.x, r.y) < 80) {
-      r.arrastando = true
+    // PRIORIDADE 1: Verifica se clicou próximo ao corpo do regador para arrastar
+    // Usamos a maior dimensão visual para definir o raio de clique
+    let raioClique = max(this.regador.visualW, this.regador.visualH) * 0.5
+    if (dist(mouseX, mouseY, this.regador.x, this.regador.y) < raioClique) {
+      this.regador.arrastando = true
+      return
     }
 
-    // Toque no Chouchou diretamente
+    // PRIORIDADE 2: Se não pegou o regador, carinho no Chouchou
     if (this.chouchou.foiTocado(mouseX, mouseY)) {
       this.chouchou.tocar()
     }

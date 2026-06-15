@@ -1,9 +1,3 @@
-// ─── Cozinha / Laboratório ────────────────────────────────────────────────────
-// Cômodo onde o Chouchou se alimenta de elementos químicos.
-// Usa os sprites de fundo e a máquina de elementos carregados em
-// ChouchouLoader.js (SPRITES_CENARIO).
-// ──────────────────────────────────────────────────────────────────────────────
-
 class Cozinha {
   constructor(chouchou) {
     this.nome     = 'Laboratório'
@@ -16,42 +10,31 @@ class Cozinha {
   }
 
   draw() {
-    // ── Camada 1: fundo do laboratório (PNG 1080×720) ─────────────────────────
+    // ── Camada 1: fundo do laboratório ────────────────────────────────────────
     if (SPRITES_CENARIO.laboratorio) {
       imageMode(CORNER)
       image(SPRITES_CENARIO.laboratorio, 0, 0, width, height)
     } else {
-      // Fallback enquanto o PNG não carrega
       background('#1a2a1a')
     }
 
-    // ── Camada 2: Chouchou (atrás da máquina) ─────────────────────────────────
+    // ── Camada 2: Chouchou ────────────────────────────────────────────────────
     this.chouchou.draw()
 
-    // ── Camada 3: máquina de elementos (centro superior, abaixo da HUD) ───────
-    // A HUD do topo tem 66px, então a máquina começa em y=66.
-    // Dimensões originais: 433×231 — desenhada em tamanho real.
-    if (SPRITES_CENARIO.maquinaElement) {
-      imageMode(CENTER)
-      image(
-        SPRITES_CENARIO.maquinaElement,
-        width / 2,          // centro horizontal
-        66 + 231 / 2,       // topo da HUD + metade da altura da máquina
-        433, 231
-      )
-    }
-
-    // ── Camada 4: FoodSystem (elemento ativo + menu da máquina) ───────────────
-    // Desenhado por cima de tudo para ficar sempre clicável/visível.
+    // ── Camada 3: FoodSystem (elemento ativo para arrastar) ───────────────────
     this.food.draw()
   }
 
   mousePressed() {
-    if (this.chouchou.foiTocado(mouseX, mouseY)) {
-      this.chouchou.tocar()
-      return
+    // PRIORIDADE 1: Tenta interagir com a comida primeiro
+    let interagiuComComida = this.food.mousePressed()
+
+    // PRIORIDADE 2: Se não clicou na comida, verifica se tocou no Chouchou
+    if (!interagiuComComida) {
+      if (this.chouchou.foiTocado(mouseX, mouseY)) {
+        this.chouchou.tocar()
+      }
     }
-    this.food.mousePressed()
   }
 
   mouseReleased() {
