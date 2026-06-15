@@ -25,6 +25,7 @@ class Chouchou {
       energia: { valor: 90, max: 100, cor: '#facc15', icone: '⚡' }, // amarelo
     }
 
+    
     // ── Estado atual ─────────────────────────────────────────────────────────
     // Controla qual animação e expressão estão ativos.
     // Valores válidos: 'idle' | 'feliz' | 'bocaAberta' | 'comendo' | 'triste' | 'dormindo'

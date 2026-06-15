@@ -5,12 +5,15 @@ const ALTURA  = 720
 // Instâncias globais acessíveis por todos os módulos
 let sceneManager
 let chouchou
+let fonteCustomizada
 
 // ─── preload ──────────────────────────────────────────────────────────────────
 // Chamado pelo p5 antes de tudo — ideal para carregar imagens e sons
 function preload() {
   chouchou = new Chouchou()
   carregarSpritesChouchou(chouchou) // preenche os sprites quando os PNGs existirem
+
+  fonteCustomizada = loadFont('assets/fonts/Pou-RMR6.ttf')
 }
 
 // ─── setup ────────────────────────────────────────────────────────────────────
