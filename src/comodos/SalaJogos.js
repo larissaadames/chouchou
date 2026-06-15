@@ -6,7 +6,7 @@ class SalaJogos {
 
     // Importamos os objetos separadamente!
     this.bola = new Bola();
-    this.popup = new PopupMinijogos();
+    this.popup = new PopupMinijogos(this.chouchou);
 
     // Hitbox da TV para abrir o menu
     this.hitboxTV = { x: width / 2 - 150, y: 50, w: 300, h: 200 };

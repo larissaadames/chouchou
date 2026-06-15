@@ -105,7 +105,7 @@ class Chouchou {
   foiTocado(px, py) {
     return dist(px, py, this.x, this.y) < 130
   }
-  
+
   // Toque carinhoso — aumenta humor, reage visualmente.
   // Qualquer cômodo pode chamar isso no mousePressed().
   tocar() {
@@ -121,6 +121,22 @@ class Chouchou {
     const stat = this.stats[chave]
     if (!stat) return
     stat.valor = constrain(stat.valor + quantidade, 0, stat.max)
+  }
+
+  podeJogar() {
+    const limiteMinimo = 20; // Se algum status estiver abaixo de 20, ele não joga
+
+    if (this.stats.energia.valor < limiteMinimo) {
+      return { apto: false, motivo: "Estou sem energia!" };
+    }
+    if (this.stats.fome.valor < limiteMinimo) {
+      return { apto: false, motivo: "Estou com muita fome!" };
+    }
+    if (this.stats.hidratação.valor < limiteMinimo) {
+      return { apto: false, motivo: "Estou com muita sede!" };
+    }
+
+    return { apto: true, motivo: "" };
   }
 
   // ── Update (lógica de animação) ───────────────────────────────────────────

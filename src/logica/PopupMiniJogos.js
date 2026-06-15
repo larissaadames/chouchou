@@ -1,5 +1,6 @@
 class PopupMinijogos {
-  constructor() {
+  constructor(chouchou) {
+    this.chouchou = chouchou;
     this.aberto = false;
     this.btnFechar = { x: 0, y: 0, w: 40, h: 40 };
 
@@ -8,6 +9,9 @@ class PopupMinijogos {
     this.mouseAntigoScrollY = 0;
     this.jogoPressionado = null; 
     this.arrastou = false; 
+
+    this.mensagemErro = "";
+    this.tempoErro = 0;
 
     this.jogos = [
       { id: 'minigame_pulo',    nome: 'Pulo Nuvem', imagem: null, x: 0, y: 0 },
@@ -21,6 +25,11 @@ class PopupMinijogos {
   }
 
   update() {
+
+    if (this.tempoErro > 0) {
+      this.tempoErro--;
+    }
+    
     if (this.arrastandoScroll) {
       let deltaY = mouseY - this.mouseAntigoScrollY;
       
@@ -147,6 +156,24 @@ class PopupMinijogos {
       textSize(14);
       textStyle(BOLD);
       text(jogo.nome, jogo.x + jogo.w / 2, jogo.y + jogo.h - 26);
+      
+      if (this.tempoErro > 0) {
+        push();
+        // Fundo vermelho de alerta, desenhado por cima de tudo
+        fill(239, 68, 68, 220); 
+        noStroke();
+        rectMode(CENTER);
+        rect(width / 2, height / 2, 280, 50, 16);
+        
+        // Texto branco
+        fill(255);
+        textAlign(CENTER, CENTER);
+        textSize(16);
+        textStyle(BOLD);
+        text(this.mensagemErro, width / 2, height / 2);
+        pop();
+        }
+
     }
 
     drawingContext.restore(); // Desativa janela de clipping
@@ -197,8 +224,19 @@ class PopupMinijogos {
     this.arrastandoScroll = false;
     
     if (this.jogoPressionado && !this.arrastou) {
-      sceneManager.irPara(this.jogoPressionado.id);
-      console.log("Abrir minijogo:", this.jogoPressionado.id);
+      // 1. Pergunta ao Chouchou se ele pode jogar
+      const condicao = this.chouchou.podeJogar();
+      
+      if (condicao.apto) {
+        // Pode jogar: Abre a cena do minigame
+        sceneManager.irPara(this.jogoPressionado.id);
+        console.log("Abrir minijogo:", this.jogoPressionado.id);
+      } else {
+        // Não pode jogar: Mostra o erro e deixa o Chouchou triste
+        this.mensagemErro = condicao.motivo;
+        this.tempoErro = 120; // Fica visível por ~2 segundos (a 60 FPS)
+        this.chouchou.setEstado('triste');
+      }
     }
     this.jogoPressionado = null;
   }
