@@ -90,4 +90,7 @@ function carregarSons() {
     loadSound('assets/sounds/chouchou/som_nham_03.wav'),
     loadSound('assets/sounds/chouchou/som_nham_04.wav')
   ];
+
+  SONS_CHOUCHOU.musica_fooddrop = loadSound('assets/sounds/songs/fooddrop.mp3');
+  SONS_CHOUCHOU.game_over = loadSound('assets/sounds/effects/game-over.mp3');
 }
