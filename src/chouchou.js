@@ -12,7 +12,7 @@ class Chouchou {
     // ── Cor do corpo (usuário pode personalizar) ─────────────────────────────
     // Corpo é desenhado em branco/cinza claro no PNG;
     // o tint() aplica essa cor por cima.
-    this.cor = { r: 50, g: 170, b: 50} // bege-dourado padrão
+    this.cor = { r: 50, g: 100, b: 50} // bege-dourado padrão
 
     // ── Stats (fome, humor, saúde) ───────────────────────────────────────────
     // Cada stat vai de 0 (péssimo) a 100 (perfeito).
