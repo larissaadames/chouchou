@@ -76,6 +76,12 @@ class HomeScene {
     textSize(16)
     text('seu bichinho virtual', width / 2, height / 2 - 40)
 
+
+    fill(255, 255, 255, 160)
+    textSize(16)
+    text('Créditos: Luiz Quintiliano, Larissa Adames, Davi Cagnato, Graziele Claus', width / 2, height / 4 - 20)
+
+
     // Botão jogar
     this._desenharBotao(this.btn.x, this.btn.y, 'JOGAR ->')
   }
