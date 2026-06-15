@@ -125,8 +125,8 @@ class FoodSystem {
     this.chouchou._alterarStat('fome', item.fome)
     this.chouchou.setEstado('comendo')
     
-    setTimeout(() => this.chouchou.setEstado('idle'), 1200)
-    setTimeout(() => this._sortearItemAtivo(), 600)
+    setTimeout(() => this.chouchou.setEstado('idle'), 800)
+    setTimeout(() => this._sortearItemAtivo(), 800)
     
     this.itemAtivo = null
   }
