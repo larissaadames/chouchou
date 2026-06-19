@@ -32,7 +32,7 @@ class Quarto {
       { id: 'nenhum',   nome: 'Nenhum',  tipo: 'chapeu' }
     ]
 
-    // A Lista de Cores (Exatamente igual à Loja para sincronia perfeita)
+    // A Lista de Cores (Exatamente igual à Loja)
     this.listaCores = [
       { id: 'cor_bege',    nome: 'Padrão',   rgb: {r: 50, g: 100, b: 50} },
       { id: 'cor_amarelo', nome: 'Amarelo',  rgb: {r: 250, g: 204, b: 21} },

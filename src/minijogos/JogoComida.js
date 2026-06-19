@@ -34,7 +34,6 @@ class JogoComida extends MinijogoBase {
     this.chouchou.setEstado('idle');
   }
 
-  // ── CONTROLE DA MÚSICA NA PAUSA ──
   aoPausar() {
     if (SONS_CHOUCHOU.musica_fooddrop && SONS_CHOUCHOU.musica_fooddrop.isPlaying()) {
       SONS_CHOUCHOU.musica_fooddrop.pause();

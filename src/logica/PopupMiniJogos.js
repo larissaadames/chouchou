@@ -27,7 +27,6 @@ class PopupMinijogos {
     if (this.tempoErro > 0) {
       this.tempoErro--;
       
-      // BOA PRÁTICA: Verificação dinâmica. Se o Chouchou já se recuperou,
       // removemos o aviso imediatamente da tela sem esperar o timer zerar.
       if (this.chouchou.podeJogar().apto) {
         this.tempoErro = 0;

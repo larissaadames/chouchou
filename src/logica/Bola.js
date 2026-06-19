@@ -1,3 +1,5 @@
+// essa classe aqui é a disparervilha que fica na sala de jogos, achei melhor separar num arquivo próprio pra não ficar muito grande
+
 class Bola {
   constructor() {
     this.x = 975;        
