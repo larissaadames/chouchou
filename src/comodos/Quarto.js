@@ -160,7 +160,7 @@ class Quarto {
     if (podeEquipar) {
       fill(255); text(item.nome, x + w / 2, y + h / 2);
     } else {
-      fill(120); text(`🔒 ${item.nome}`, x + w / 2, y + h / 2);
+      fill(120); text(`${item.nome}`, x + w / 2, y + h / 2);
     }
   }
 

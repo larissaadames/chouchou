@@ -1,59 +1,25 @@
-PARA ADICIONAR ATRIBUTOS:
 
-São só 2 lugares para mexer, ambos no `Chouchou.js`:
+///////
 
-### 1. Adicionar em `this.stats`
+Feito por:
+Luis Felipe de Souza Quintiliano da Silva
+Larissa Adames
+Davi Cagnato
+Grazielle Claus
 
-```js
-this.stats = {
-  fome:       { valor: 80, max: 100, cor: '#f97316', icone: '🍖' },
-  humor:      { valor: 60, max: 100, cor: '#a855f7', icone: '⭐' },
-  saude:      { valor: 90, max: 100, cor: '#22c55e', icone: '💚' },
-  hidratacao: { valor: 70, max: 100, cor: '#38bdf8', icone: '💧' }, // ← azul claro
-  felicidade: { valor: 75, max: 100, cor: '#facc15', icone: '😊' }, // ← amarelo
-}
-```
+///////
 
-Só isso. A HUD já vai exibir as duas novas stats automaticamente, porque o `_hudStats()` no `SceneManager` usa `Object.keys(stats)` — ele lê qualquer chave que existir no objeto, sem precisar ser avisado.
+Chouchou é um pet virtual!
 
----
+Nesse jogo você pode: 
+- alimentá-lo com elementos químicos que todo chouchou necessita!
+- brincar com ele nos minijogos!
+- se ele estiver com sede ou falta de energia, vá no jardim e cuide bem dele!
+- você pode comprar roupinhas ou cores novas e equipá-las no quarto!
 
-### ⚠️ Um detalhe importante: 5 colunas na HUD
+Para jogar os minijogos, vá para o cômodo da sala de jogos, e clique na televisão.
+Food Drop:
+colete os elementos químicos, se comer um errado (bola preta), ou deixar 5 elementos passar, você perde!
 
-Com 5 stats, cada coluna vai ficar bem estreita (390px ÷ 5 = 78px por coluna). Vai funcionar, mas pode ficar apertado.:
-
-- **Opção A** — reduzir o `textSize` dos ícones e nomes na `_hudStats()`
-
-
-Quer testar como fica primeiro e ajustar depois?
-
-
-
-Para adicionar comodo é só adicionar o comodo.js dentro do folder comodos -> adicionar o comodo no index.html e adicionar ele no this.comodos do SceneManager.js.
-
----
-
-### 2. Adicionar novos elementos
-
-Quando quiser adicionar Fósforo por exemplo, são 3 passos:
-
-**`FoodSystem.js`** — descomentar no catálogo:
-```js
-fosforo: {
-  id: 'fosforo', nome: 'Fósforo', simbolo: 'P',
-  cor: '#fb923c', corEscura: '#c2410c', fome: +15,
-  imagem: null,
-},
-```
-
-**`ChouchouLoader.js`** — carregar o PNG:
-```js
-CATALOGO_COMIDAS.fosforo.imagem = loadImage('assets/sprites/elementos/fosforo_P.png')
-```
-
-**`FoodSystem.js`** — adicionar ao inventário do jogador:
-```js
-this.inventario = ['nitrogenio', 'fosforo']
-```
-
-Pronto — o menu da geladeira já vai exibir os dois automaticamente.
+Queda livre:
+Arraste bem o mouse para movimentar o Chouchou, desvie das nuvens e sobreviva o máximo que conseguir

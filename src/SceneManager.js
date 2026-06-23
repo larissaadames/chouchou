@@ -15,6 +15,7 @@ class SceneManager {
     this.registrar('minigame_comida', new JogoComida(this, chouchou));
     this.registrar('minigame_queda', new JogoQueda(this, chouchou));
 
+    //
     // Cena inicial
     this.irPara('home')
   }

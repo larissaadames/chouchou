@@ -98,6 +98,7 @@ const SONS_CHOUCHOU = {}
 
 function carregarSons() {
 
+//
 // Array com os sons de toque/carinho
   SONS_CHOUCHOU.nhaa = [
     loadSound('assets/sounds/chouchou/som_nhaa_01.wav'),

@@ -179,6 +179,7 @@ class PopupMinijogos {
 
     drawingContext.restore(); // Desativa janela de clipping
 
+    //
     // --- LIMITADOR DE SCROLL ---
     let alturaTotalGrid = maxLinhas * (alturaCard + espaco) + 40;
     let minScroll = clipH - alturaTotalGrid;
