@@ -7,6 +7,8 @@ Larissa Adames
 Davi Cagnato
 Grazielle Claus
 
+Para executar o projeto, apenas abra o index.html no navegador! 
+
 ///////
 
 Chouchou é um pet virtual!
