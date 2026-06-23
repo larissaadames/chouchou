@@ -45,7 +45,7 @@ function carregarCenarios() {
 
   SPRITES_CENARIO.food_drop       = loadImage('assets/sprites/fundos/food_drop.png')
   SPRITES_CENARIO.godet           = loadImage('assets/sprites/objetos/godet.png')
-  SPRITES_CENARIO.telamenu = loadImage('assets/sprites/fundos/telamenu.png')
+  SPRITES_CENARIO.telamenu = loadImage('assets/sprites/fundos/telamenu01.png')
 }
 
 // ── Elementos químicos ────────────────────────────────────────────────────────
@@ -98,7 +98,7 @@ const SONS_CHOUCHOU = {}
 
 function carregarSons() {
 
-//
+//3te
 // Array com os sons de toque/carinho
   SONS_CHOUCHOU.nhaa = [
     loadSound('assets/sounds/chouchou/som_nhaa_01.wav'),
