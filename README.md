@@ -1,8 +1,8 @@
 
 Feito por:
-Luis Felipe de Souza Quintiliano da Silva
-Larissa Adames
-Davi Cagnato
+Luis Felipe de Souza Quintiliano da Silva,
+Larissa Adames,
+Davi Cagnato,
 Grazielle Claus
 
 
