@@ -10,6 +10,7 @@ Para executar o projeto, apenas abra o index.html no live server ou no vscode!
 talvez seja necessaria a instalação da biblioteca do p5js
 
 Ou em: https://chouchou.larissaadames.dev/
+(demora um pouco para carregar)
 
 
 Chouchou é um pet virtual!
